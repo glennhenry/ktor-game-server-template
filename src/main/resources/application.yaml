@@ -1,0 +1,23 @@
+ktor:
+  application:
+    modules:
+      - ApplicationKt.module
+  development: "$DEV_MODE:true"
+  deployment:
+    port: 8080
+game:
+  host: "127.0.0.1"
+  port: 7777
+  enableAdmin: "$ADMIN:true"
+mongo:
+  url: "$MONGO_URL:mongodb://localhost:27017"
+logger:
+  minimumLevel: 0
+  colorfulLog: true
+  useForegroundColor: false # recommend false if light mode
+  fileNamePadding: 25
+  maximumLogMessageLength: 500
+  maximumLogFileSize: 5
+  maximumLogFileRotation: 5
+  logDateFormatter: "HH:mm:ss.SSS" # SimpleDateFormat
+  fileDateFormatter: "yyyy-MM-dd HH:mm:ss.SSS" # SimpleDateFormat
