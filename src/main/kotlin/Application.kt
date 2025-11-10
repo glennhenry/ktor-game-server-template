@@ -13,8 +13,11 @@ import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.uri
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.AttributeKey
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -47,14 +50,30 @@ suspend fun Application.module() {
         LoggerSettings(
             minimumLevel = config().getInt("logger.level", original.minimumLevel.toInt()).toLogLevel(),
             colorfulLog = config().getBoolean("logger.colorfulLog", original.colorfulLog),
-            colorizeLevelLabelOnly = config().getBoolean("logger.colorizeLevelLabelOnly", original.colorizeLevelLabelOnly),
+            colorizeLevelLabelOnly = config().getBoolean(
+                "logger.colorizeLevelLabelOnly",
+                original.colorizeLevelLabelOnly
+            ),
             useForegroundColor = config().getBoolean("logger.useForegroundColor", original.useForegroundColor),
             fileNamePadding = config().getInt("logger.maximumFileNameLength", original.fileNamePadding),
-            maximumLogMessageLength = config().getInt("logger.maximumLogMessageLength", original.maximumLogMessageLength),
+            maximumLogMessageLength = config().getInt(
+                "logger.maximumLogMessageLength",
+                original.maximumLogMessageLength
+            ),
             maximumLogFileSize = config().getInt("logger.maximumLogFileSize", original.maximumLogFileSize),
             maximumLogFileRotation = config().getInt("logger.maximumLogFileRotation", original.maximumLogFileRotation),
-            logDateFormatter = SimpleDateFormat(config().getString("logger.logDateFormatter", original.logDateFormatter.toPattern())),
-            fileDateFormatter = SimpleDateFormat(config().getString("logger.fileDateFormatter", original.fileDateFormatter.toPattern()))
+            logDateFormatter = SimpleDateFormat(
+                config().getString(
+                    "logger.logDateFormatter",
+                    original.logDateFormatter.toPattern()
+                )
+            ),
+            fileDateFormatter = SimpleDateFormat(
+                config().getString(
+                    "logger.fileDateFormatter",
+                    original.fileDateFormatter.toPattern()
+                )
+            )
         )
     }
 
@@ -94,6 +113,9 @@ suspend fun Application.module() {
         exception<Throwable> { call, cause ->
             Logger.error("Server error: ${cause.message}")
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
+        }
+        unhandled { call ->
+            Logger.error("Unhandled API route: ${call.request.httpMethod} ${call.request.uri}.")
         }
     }
 
@@ -153,7 +175,7 @@ suspend fun Application.module() {
 
     Logger.info { "All server started successfully" }
     Logger.info { "Socket server listening on ${gameServerConfig.host}:${gameServerConfig.port}" }
-    Logger.info { "API server available at ${gameServerConfig.host}:$apiPort"}
+    Logger.info { "API server available at ${gameServerConfig.host}:$apiPort" }
 
     if (File("docs/index.html").exists()) {
         Logger.info { "Docs website available on ${gameServerConfig.host}:$apiPort" }
