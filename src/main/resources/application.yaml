@@ -14,7 +14,8 @@ mongo:
 logger:
   minimumLevel: 0
   colorfulLog: true
-  useForegroundColor: false # recommend false if light mode
+  colorizeLevelLabelOnly: true # recommend true to reduce light
+  useForegroundColor: false    # recommend false if light mode
   fileNamePadding: 25
   maximumLogMessageLength: 500
   maximumLogFileSize: 5

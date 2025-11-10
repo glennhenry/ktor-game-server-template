@@ -47,6 +47,7 @@ suspend fun Application.module() {
         LoggerSettings(
             minimumLevel = config().getInt("logger.level", original.minimumLevel.toInt()).toLogLevel(),
             colorfulLog = config().getBoolean("logger.colorfulLog", original.colorfulLog),
+            colorizeLevelLabelOnly = config().getBoolean("logger.colorizeLevelLabelOnly", original.colorizeLevelLabelOnly),
             useForegroundColor = config().getBoolean("logger.useForegroundColor", original.useForegroundColor),
             fileNamePadding = config().getInt("logger.maximumFileNameLength", original.fileNamePadding),
             maximumLogMessageLength = config().getInt("logger.maximumLogMessageLength", original.maximumLogMessageLength),

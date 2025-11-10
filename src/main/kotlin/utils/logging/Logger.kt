@@ -138,22 +138,47 @@ object Logger {
                     val now = getTimeMillis()
                     when (target) {
                         LogTarget.Print -> {
-                            val message =
-                                buildLogMessage(
-                                    call.source, call.level,
-                                    call.rawMsg, settings.logDateFormatter.format(now)
-                                )
+                            val timestamp = settings.logDateFormatter.format(now)
+                            val levelLabel = call.level.label()
+
                             if (settings.colorfulLog) {
-                                BypassJansi.println(colorizeLog(call.level, message))
+                                val coloredMessage = if (settings.colorizeLevelLabelOnly) {
+                                    buildLogMessage(
+                                        timestamp = "[$timestamp]",
+                                        source = call.source,
+                                        level = colorizeText(call.level, "[$levelLabel]"),
+                                        rawMsg = call.rawMsg
+                                    )
+                                } else {
+                                    colorizeText(
+                                        call.level, buildLogMessage(
+                                            timestamp = "[$timestamp]",
+                                            source = call.source,
+                                            level = "[$levelLabel]",
+                                            rawMsg = call.rawMsg
+                                        )
+                                    )
+                                }
+
+                                BypassJansi.println(coloredMessage)
                             } else {
-                                BypassJansi.println(message)
+                                BypassJansi.println(
+                                    buildLogMessage(
+                                        timestamp = "[$timestamp]",
+                                        source = call.source,
+                                        level = "[$levelLabel]",
+                                        rawMsg = call.rawMsg
+                                    )
+                                )
                             }
                         }
 
                         is LogTarget.File -> {
                             val message = buildLogMessage(
-                                call.source, call.level,
-                                call.rawMsg, settings.fileDateFormatter.format(now)
+                                timestamp = "[${settings.logDateFormatter.format(now)}]",
+                                source = call.source,
+                                level = "[${call.level.label()}]",
+                                rawMsg = call.rawMsg
                             )
                             writeToFile(target.file, message)
                         }
@@ -196,23 +221,17 @@ object Logger {
         return "($truncated:$line)"
     }
 
-    private fun buildLogMessage(source: String, level: LogLevel, rawMsg: String, timestamp: String): String {
-        val levelLabel = when (level) {
-            LogLevel.Verbose -> "V"
-            LogLevel.Debug -> "D"
-            LogLevel.Info -> "I"
-            LogLevel.Warn -> "W"
-            LogLevel.Error -> "E"
-            LogLevel.Nothing -> "N"
-        }
-
-        return "[$timestamp]$source[$levelLabel]: $rawMsg"
+    /**
+     * Build log message in the order: timestamp_source_level: rawMsg.
+     */
+    private fun buildLogMessage(timestamp: String, source: String, level: String, rawMsg: String): String {
+        return "$timestamp$source$level: $rawMsg"
     }
 
     /**
-     * Colorize log message using ANSI colors.
+     * Colorize certain text message using ANSI colors.
      */
-    private fun colorizeLog(level: LogLevel, text: String): String {
+    private fun colorizeText(level: LogLevel, text: String): String {
         val fg: String
         val bg: String
 
@@ -286,6 +305,7 @@ object BypassJansi {
 data class LoggerSettings(
     val minimumLevel: LogLevel = LogLevel.Verbose,
     val colorfulLog: Boolean = true,
+    val colorizeLevelLabelOnly: Boolean = false,
     val useForegroundColor: Boolean = false,
     val fileNamePadding: Int = 25,
     val maximumLogMessageLength: Int = 500,
@@ -317,6 +337,17 @@ fun LogLevel.toInt(): Int {
         LogLevel.Warn -> 3
         LogLevel.Error -> 4
         LogLevel.Nothing -> 5
+    }
+}
+
+fun LogLevel.label(): String {
+    return when (this) {
+        LogLevel.Verbose -> "V"
+        LogLevel.Debug -> "D"
+        LogLevel.Info -> "I"
+        LogLevel.Warn -> "W"
+        LogLevel.Error -> "E"
+        LogLevel.Nothing -> "N"
     }
 }
 
