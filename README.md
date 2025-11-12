@@ -57,6 +57,56 @@ $env:ADMIN = "true"
 java -jar changeme.jar
 ```
 
+## Docs
+
+Empty documentation template ([built with Starlight](https://starlight.astro.build/), based on [sl-obsidian-starter](https://github.com/glennhenry/sl-obsidian-starter)) is available on `docs/`
+
+To run the website locally:
+
+```bash
+cd docs
+npm install
+npm run dev
+```
+
+Docs running on `http://localhost:4321/docs`
+
+For more info on setup and configuration, please see
+the [official Starlight documentation](https://starlight.astro.build/getting-started/).
+
+### How to add new page:
+
+1. A page must be `.md` file and is enforced to have this on top of them (frontmatter):
+
+```
+---
+title: Subfolder Example
+slug: folderA/folderB/example
+description: example
+---
+```
+
+2. Replace the title appropriately. The description is optional; you can set it to be the same as the title. Any images
+   or videos should be placed in `src/assets/`.
+3. The slug is produced from the directory structure. For instance, this page is named `example.md` and is under the
+   `folderB` within the `folderA`.
+4. Next, add the page to the sidebar.
+    1. Begin by editing the `astro.config.mjs`.
+    2. Follow the existing sidebar link
+       format. [More details on official documentation](https://starlight.astro.build/guides/sidebar/).
+
+## Commands
+
+The server supports command-line input directly from the terminal it’s running in.
+They are used to control and monitor the server.
+A list of available commands and their usage can be found in `Commands.md`.
+
+## DevTools
+
+A web-based developer toolkit that provides a user interface for monitoring and interacting with the server.
+
+TBA
+
 ## Structure
 
 <details>
@@ -107,40 +157,12 @@ java -jar changeme.jar
 
 </details>
 
-## Docs
+### TODO
 
-Empty documentation template ([built with Starlight](https://starlight.astro.build/), based on [sl-obsidian-starter](https://github.com/glennhenry/sl-obsidian-starter)) is available on `docs/`
-
-To run the website locally:
-
-```bash
-cd docs
-npm install
-npm run dev
-```
-
-Docs running on `http://localhost:4321/docs`
-
-For more info on setup and configuration, please see
-the [official Starlight documentation](https://starlight.astro.build/getting-started/).
-
-### How to add new page:
-
-1. A page must be `.md` file and is enforced to have this on top of them (frontmatter):
-
-```
----
-title: Subfolder Example
-slug: folderA/folderB/example
-description: example
----
-```
-
-2. Replace the title appropriately. The description is optional; you can set it to be the same as the title. Any images
-   or videos should be placed in `src/assets/`.
-3. The slug is produced from the directory structure. For instance, this page is named `example.md` and is under the
-   `folderB` within the `folderA`.
-4. Next, add the page to the sidebar.
-   1. Begin by editing the `astro.config.mjs`.
-   2. Follow the existing sidebar link
-      format. [More details on official documentation](https://starlight.astro.build/guides/sidebar/).
+- to fix: command input often get cuts off because of logging, though the input buffer still work.
+- dev tools (from route /devtools)
+  - basic authentication with ephemeral token; token refresh from local command line
+  - advanced logger display
+  - server monitoring
+  - ability to execute command from route in /cmd websocket instead of local command line
+- rate limiter, flood anticipator
