@@ -2,6 +2,7 @@ import api.routes.fileRoutes
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import context.DefaultContextTracker
 import context.ServerContext
+import context.ServerServices
 import core.data.GameDefinition
 import data.MongoImpl
 import io.ktor.http.*
@@ -134,6 +135,7 @@ suspend fun Application.module() {
     val contextTracker = DefaultContextTracker()
     val codecDispatcher = SocketCodecDispatcher()
     val taskDispatcher = ServerTaskDispatcher()
+    val services = ServerServices()
     val serverContext = ServerContext(
         db = database,
         playerAccountRepository = playerAccountRepository,
@@ -143,6 +145,7 @@ suspend fun Application.module() {
         contextTracker = contextTracker,
         codecDispatcher = codecDispatcher,
         taskDispatcher = taskDispatcher,
+        services = services
     )
 
     /* 8. Initialize GameDefinition */

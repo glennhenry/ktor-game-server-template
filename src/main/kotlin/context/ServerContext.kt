@@ -1,5 +1,7 @@
 package context
 
+import core.PlayerService
+import core.ServerService
 import data.Database
 import data.EmptyDatabase
 import server.core.OnlinePlayerRegistry
@@ -32,7 +34,8 @@ data class ServerContext(
     val onlinePlayerRegistry: OnlinePlayerRegistry,
     val contextTracker: ContextTracker,
     val codecDispatcher: SocketCodecDispatcher,
-    val taskDispatcher: ServerTaskDispatcher
+    val taskDispatcher: ServerTaskDispatcher,
+    val services: ServerServices
 ) {
     companion object {
         /**
@@ -59,7 +62,8 @@ data class ServerContext(
                 onlinePlayerRegistry = OnlinePlayerRegistry(),
                 contextTracker = contextTracker,
                 codecDispatcher = SocketCodecDispatcher(),
-                taskDispatcher = ServerTaskDispatcher()
+                taskDispatcher = ServerTaskDispatcher(),
+                services = ServerServices()
             )
         }
     }
@@ -81,3 +85,17 @@ fun ServerContext.getPlayerContextOrNull(playerId: String): PlayerContext? =
 fun ServerContext.requirePlayerContext(playerId: String): PlayerContext =
     getPlayerContextOrNull(playerId)
         ?: error("PlayerContext not found for playerId=$playerId")
+
+/**
+ * A container that holds all **global service instances** used by the server.
+ *
+ * Whereas [PlayerService] encapsulates domain logic specific to individual players,
+ * [ServerService] encapsulates server-wide domain logic that operates on shared data.
+ *
+ * For example, a leaderboard is not owned by any single player — it represents
+ * global state managed by the server. A `LeaderboardService` might provide operations
+ * to retrieve player rankings or update them.
+ */
+data class ServerServices(
+    val example: String = ""
+)
