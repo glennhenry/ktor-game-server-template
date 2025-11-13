@@ -1,5 +1,7 @@
 package utils
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import utils.logging.DataLogger
@@ -17,7 +19,7 @@ import kotlin.test.Test
  */
 class TestLoggerDisplay {
     @Test
-    fun testLogger() {
+    fun testLogger() = runTest {
         Logger.updateSettings {
             it.copy(colorizeLevelLabelOnly = false, useForegroundColor = false)
         }
@@ -38,6 +40,7 @@ class TestLoggerDisplay {
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
 
+        delay(200)
         Logger.updateSettings {
             it.copy(colorizeLevelLabelOnly = true, useForegroundColor = false)
         }
@@ -58,6 +61,7 @@ class TestLoggerDisplay {
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
 
+        delay(200)
         Logger.updateSettings {
             it.copy(colorizeLevelLabelOnly = false, useForegroundColor = true)
         }
@@ -78,6 +82,7 @@ class TestLoggerDisplay {
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
 
+        delay(200)
         Logger.updateSettings {
             it.copy(colorizeLevelLabelOnly = true, useForegroundColor = true)
         }
