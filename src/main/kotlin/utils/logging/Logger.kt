@@ -235,7 +235,7 @@ object Logger {
     }
 
     /**
-     * Build log message in the order: 'timestamp source tag level: rawMsg'.
+     * Build log message in the order: 'timestamp source tag level rawMsg'.
      */
     private fun buildLogMessage(timestamp: String, source: String, tag: String, level: String, rawMsg: String): String {
         val boldedLevel = AnsiColors.bold(level)
@@ -248,7 +248,7 @@ object Logger {
             "TAG:$padded"
         }
 
-        return "$timestamp$source[$shortenedTag]$boldedLevel: $rawMsg"
+        return "$timestamp$source[$shortenedTag]$boldedLevel $rawMsg"
     }
 
     /**
