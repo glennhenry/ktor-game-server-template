@@ -15,6 +15,7 @@ package devtools.cmd
  * The corresponding `GiveCommand` should declare its argument information as:
  * ```kotlin
  * val argInfo = mapOf(
+ *     // "The field named 'playerId' has argument info of..."
  *     "playerId" to ArgumentInfo(
  *         name = "playerId",
  *         description = "The unique identifier of the target player.",
