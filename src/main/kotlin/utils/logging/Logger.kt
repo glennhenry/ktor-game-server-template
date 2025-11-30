@@ -95,25 +95,25 @@ object Logger {
     private val logQueue = LinkedBlockingQueue<LogCall>()
     private val executor = Executors.newSingleThreadExecutor()
 
-    fun verbose(tag: String = "Unspecified", msg: String, logFull: Boolean = true) = verbose(tag, logFull) { msg }
-    fun verbose(tag: String = "Unspecified", logFull: Boolean = true, msg: () -> String) = verbose(tag, logFull, Default, msg)
-    fun verbose(tag: String = "Unspecified", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Verbose, msg)
+    fun verbose(tag: String = "", msg: String, logFull: Boolean = true) = verbose(tag, logFull) { msg }
+    fun verbose(tag: String = "", logFull: Boolean = true, msg: () -> String) = verbose(tag, logFull, Default, msg)
+    fun verbose(tag: String = "", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Verbose, msg)
 
-    fun debug(tag: String = "Unspecified", msg: String, logFull: Boolean = true) = debug(tag, logFull) { msg }
-    fun debug(tag: String = "Unspecified", logFull: Boolean = true, msg: () -> String) = debug(tag, logFull, Default, msg)
-    fun debug(tag: String = "Unspecified", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Debug, msg)
+    fun debug(tag: String = "", msg: String, logFull: Boolean = true) = debug(tag, logFull) { msg }
+    fun debug(tag: String = "", logFull: Boolean = true, msg: () -> String) = debug(tag, logFull, Default, msg)
+    fun debug(tag: String = "", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Debug, msg)
 
-    fun info(tag: String = "Unspecified", msg: String, logFull: Boolean = true) = info(tag, logFull) { msg }
-    fun info(tag: String = "Unspecified", logFull: Boolean = true, msg: () -> String) = info(tag, logFull, Default, msg)
-    fun info(tag: String = "Unspecified", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Info, msg)
+    fun info(tag: String = "", msg: String, logFull: Boolean = true) = info(tag, logFull) { msg }
+    fun info(tag: String = "", logFull: Boolean = true, msg: () -> String) = info(tag, logFull, Default, msg)
+    fun info(tag: String = "", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Info, msg)
 
-    fun warn(tag: String = "Unspecified", msg: String, logFull: Boolean = true) = warn(tag, logFull) { msg }
-    fun warn(tag: String = "Unspecified", logFull: Boolean = true, msg: () -> String) = warn(tag, logFull, Default, msg)
-    fun warn(tag: String = "Unspecified", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Warn, msg)
+    fun warn(tag: String = "", msg: String, logFull: Boolean = true) = warn(tag, logFull) { msg }
+    fun warn(tag: String = "", logFull: Boolean = true, msg: () -> String) = warn(tag, logFull, Default, msg)
+    fun warn(tag: String = "", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Warn, msg)
 
-    fun error(tag: String = "Unspecified", msg: String, logFull: Boolean = true) = error(tag, logFull) { msg }
-    fun error(tag: String = "Unspecified", logFull: Boolean = true, msg: () -> String) = error(tag, logFull, Default, msg)
-    fun error(tag: String = "Unspecified", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Error, msg)
+    fun error(tag: String = "", msg: String, logFull: Boolean = true) = error(tag, logFull) { msg }
+    fun error(tag: String = "", logFull: Boolean = true, msg: () -> String) = error(tag, logFull, Default, msg)
+    fun error(tag: String = "", logFull: Boolean = true, targets: Set<LogTarget>, msg: () -> String) = log(tag, logFull, targets, LogLevel.Error, msg)
 
     private fun log(
         tag: String,
@@ -233,20 +233,15 @@ object Logger {
     }
 
     /**
-     * Build log message in the order: 'timestamp source tag level rawMsg'.
+     * Build log message in the order: 'timestamp source level <tag> rawMsg'.
      */
     private fun buildLogMessage(timestamp: String, source: String, tag: String, level: String, rawMsg: String): String {
         val boldedLevel = AnsiColors.bold(level)
-
-        val shortenedTag = if (tag.length > settings.tagPadding) {
-            val truncated = tag.take(settings.tagPadding - 2) + "..."
-            "TAG:$truncated"
+        return if (tag.isEmpty()) {
+            "$timestamp$source$boldedLevel $rawMsg"
         } else {
-            val padded = tag.padEnd(settings.tagPadding, ' ')
-            "TAG:$padded"
+            "$timestamp$source$boldedLevel <$tag> $rawMsg"
         }
-
-        return "$timestamp$source[$shortenedTag]$boldedLevel $rawMsg"
     }
 
     /**

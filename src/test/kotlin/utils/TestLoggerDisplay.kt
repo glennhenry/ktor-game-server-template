@@ -24,19 +24,19 @@ class TestLoggerDisplay {
             it.copy(colorizeLevelLabelOnly = false, useForegroundColor = false)
         }
 
-        Logger.verbose { "This is an example of 'Logger.verbose' message (1)." }
+        Logger.verbose("TestTag") { "This is an example of 'Logger.verbose' message with custom tag with custom tag (1)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (2)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (3)." }
-        Logger.debug { "This is an example of 'Logger.debug' message (1)." }
+        Logger.debug("TestTag") { "This is an example of 'Logger.debug' message with custom tag with custom tag (1)." }
         Logger.debug { "This is an example of 'Logger.debug' message (2)." }
         Logger.debug { "This is an example of 'Logger.debug' message (3)." }
-        Logger.info { "This is an example of 'Logger.info' message (1)." }
+        Logger.info("TestTag") { "This is an example of 'Logger.info' message with custom tag with custom tag (1)." }
         Logger.info { "This is an example of 'Logger.info' message (2)." }
         Logger.info { "This is an example of 'Logger.info' message (3)." }
-        Logger.warn { "This is an example of 'Logger.warn' message (1)." }
+        Logger.warn("TestTag") { "This is an example of 'Logger.warn' message with custom tag with custom tag (1)." }
         Logger.warn { "This is an example of 'Logger.warn' message (2)." }
         Logger.warn { "This is an example of 'Logger.warn' message (3)." }
-        Logger.error { "This is an example of 'Logger.error' message (1)." }
+        Logger.error("TestTag") { "This is an example of 'Logger.error' message with custom tag with custom tag (1)." }
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
 
@@ -45,19 +45,19 @@ class TestLoggerDisplay {
             it.copy(colorizeLevelLabelOnly = true, useForegroundColor = false)
         }
 
-        Logger.verbose { "This is an example of 'Logger.verbose' message (1)." }
+        Logger.verbose("TestTag") { "This is an example of 'Logger.verbose' message with custom tag (1)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (2)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (3)." }
-        Logger.debug { "This is an example of 'Logger.debug' message (1)." }
+        Logger.debug("TestTag") { "This is an example of 'Logger.debug' message with custom tag (1)." }
         Logger.debug { "This is an example of 'Logger.debug' message (2)." }
         Logger.debug { "This is an example of 'Logger.debug' message (3)." }
-        Logger.info { "This is an example of 'Logger.info' message (1)." }
+        Logger.info("TestTag") { "This is an example of 'Logger.info' message with custom tag (1)." }
         Logger.info { "This is an example of 'Logger.info' message (2)." }
         Logger.info { "This is an example of 'Logger.info' message (3)." }
-        Logger.warn { "This is an example of 'Logger.warn' message (1)." }
+        Logger.warn("TestTag") { "This is an example of 'Logger.warn' message with custom tag (1)." }
         Logger.warn { "This is an example of 'Logger.warn' message (2)." }
         Logger.warn { "This is an example of 'Logger.warn' message (3)." }
-        Logger.error { "This is an example of 'Logger.error' message (1)." }
+        Logger.error("TestTag") { "This is an example of 'Logger.error' message with custom tag (1)." }
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
 
@@ -66,19 +66,19 @@ class TestLoggerDisplay {
             it.copy(colorizeLevelLabelOnly = false, useForegroundColor = true)
         }
 
-        Logger.verbose { "This is an example of 'Logger.verbose' message (1)." }
+        Logger.verbose("TestTag") { "This is an example of 'Logger.verbose' message with custom tag (1)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (2)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (3)." }
-        Logger.debug { "This is an example of 'Logger.debug' message (1)." }
+        Logger.debug("TestTag") { "This is an example of 'Logger.debug' message with custom tag (1)." }
         Logger.debug { "This is an example of 'Logger.debug' message (2)." }
         Logger.debug { "This is an example of 'Logger.debug' message (3)." }
-        Logger.info { "This is an example of 'Logger.info' message (1)." }
+        Logger.info("TestTag") { "This is an example of 'Logger.info' message with custom tag (1)." }
         Logger.info { "This is an example of 'Logger.info' message (2)." }
         Logger.info { "This is an example of 'Logger.info' message (3)." }
-        Logger.warn { "This is an example of 'Logger.warn' message (1)." }
+        Logger.warn("TestTag") { "This is an example of 'Logger.warn' message with custom tag (1)." }
         Logger.warn { "This is an example of 'Logger.warn' message (2)." }
         Logger.warn { "This is an example of 'Logger.warn' message (3)." }
-        Logger.error { "This is an example of 'Logger.error' message (1)." }
+        Logger.error("TestTag") { "This is an example of 'Logger.error' message with custom tag (1)." }
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
 
@@ -87,19 +87,19 @@ class TestLoggerDisplay {
             it.copy(colorizeLevelLabelOnly = true, useForegroundColor = true)
         }
 
-        Logger.verbose { "This is an example of 'Logger.verbose' message (1)." }
+        Logger.verbose("TestTag") { "This is an example of 'Logger.verbose' message with custom tag (1)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (2)." }
         Logger.verbose { "This is an example of 'Logger.verbose' message (3)." }
-        Logger.debug { "This is an example of 'Logger.debug' message (1)." }
+        Logger.debug("TestTag") { "This is an example of 'Logger.debug' message with custom tag (1)." }
         Logger.debug { "This is an example of 'Logger.debug' message (2)." }
         Logger.debug { "This is an example of 'Logger.debug' message (3)." }
-        Logger.info { "This is an example of 'Logger.info' message (1)." }
+        Logger.info("TestTag") { "This is an example of 'Logger.info' message with custom tag (1)." }
         Logger.info { "This is an example of 'Logger.info' message (2)." }
         Logger.info { "This is an example of 'Logger.info' message (3)." }
-        Logger.warn { "This is an example of 'Logger.warn' message (1)." }
+        Logger.warn("TestTag") { "This is an example of 'Logger.warn' message with custom tag (1)." }
         Logger.warn { "This is an example of 'Logger.warn' message (2)." }
         Logger.warn { "This is an example of 'Logger.warn' message (3)." }
-        Logger.error { "This is an example of 'Logger.error' message (1)." }
+        Logger.error("TestTag") { "This is an example of 'Logger.error' message with custom tag (1)." }
         Logger.error { "This is an example of 'Logger.error' message (2)." }
         Logger.error { "This is an example of 'Logger.error' message (3)." }
     }
