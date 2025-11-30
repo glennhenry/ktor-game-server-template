@@ -11,4 +11,4 @@ else
     exit 1
 fi
 
-"$JAVA" -jar changeme.jar
+"$JAVA" --enable-native-access=ALL-UNNAMED -jar changeme.jar
