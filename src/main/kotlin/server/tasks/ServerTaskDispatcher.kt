@@ -87,27 +87,27 @@ class ServerTaskDispatcher(private val time: TimeProvider = SystemTime) : TaskSc
 
         val job = connection.connectionScope.launch {
             try {
-                Logger.info("[runTask Hello]") { "Task ${taskToRun.name.code} has been scheduled to run (waiting for startDelay) for playerId=${connection.playerId}, taskId=$taskId" }
+                Logger.info("runTask Hello") { "Task ${taskToRun.name.code} has been scheduled to run (waiting for startDelay) for playerId=${connection.playerId}, taskId=$taskId" }
                 val scheduler = taskToRun.scheduler ?: this@ServerTaskDispatcher
                 scheduler.schedule(connection, taskId, taskToRun)
             } catch (e: CancellationException) {
                 when (e) {
                     is ForceCompleteException -> {
-                        Logger.info("[ForceCompleteException]") { "Task '${taskToRun.name.code}' was forced to complete for playerId=${connection.playerId}, taskId=$taskId" }
+                        Logger.info("ForceCompleteException") { "Task '${taskToRun.name.code}' was forced to complete for playerId=${connection.playerId}, taskId=$taskId" }
                     }
 
                     is ManualCancellationException -> {
-                        Logger.info("[ManualCancellationException]") { "Task '${taskToRun.name.code}' was manually cancelled for playerId=${connection.playerId}, taskId=$taskId" }
+                        Logger.info("ManualCancellationException") { "Task '${taskToRun.name.code}' was manually cancelled for playerId=${connection.playerId}, taskId=$taskId" }
                     }
 
                     else -> {
-                        Logger.warn("[CancellationException]") { "Task '${taskToRun.name.code}' was cancelled for playerId=${connection.playerId}, taskId=$taskId" }
+                        Logger.warn("CancellationException") { "Task '${taskToRun.name.code}' was cancelled for playerId=${connection.playerId}, taskId=$taskId" }
                     }
                 }
             } catch (e: Exception) {
-                Logger.error("[runTask Exception]") { "Error on task '${taskToRun.name.code}': $e for playerId=${connection.playerId}, taskId=$taskId" }
+                Logger.error("runTask Exception") { "Error on task '${taskToRun.name.code}': $e for playerId=${connection.playerId}, taskId=$taskId" }
             } finally {
-                Logger.info("[runTask Goodbye]") { "Task '${taskToRun.name.code}' no longer run for playerId=${connection.playerId}, taskId=$taskId" }
+                Logger.info("runTask Goodbye") { "Task '${taskToRun.name.code}' no longer run for playerId=${connection.playerId}, taskId=$taskId" }
                 runningInstances.remove(taskId)
             }
         }
