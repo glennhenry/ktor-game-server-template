@@ -1,4 +1,6 @@
+import api.routes.devtoolsRoutes
 import api.routes.fileRoutes
+import api.routes.underOneMinute
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import context.DefaultContextTracker
 import context.ServerContext
@@ -17,6 +19,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
@@ -36,6 +39,7 @@ import user.PlayerAccountRepositoryMongo
 import user.auth.DefaultAuthProvider
 import user.auth.SessionManager
 import utils.JSON
+import utils.functions.UUID
 import utils.logging.Logger
 import utils.logging.LoggerSettings
 import utils.logging.toInt
@@ -155,9 +159,13 @@ suspend fun Application.module() {
     /* 8. Initialize GameDefinition */
     GameDefinition.initialize()
 
+    // represent ephemeral token storage generated to enter /devtools
+    val devtoolsToken = mutableMapOf<String, Long>()
+
     /* 9. Register routes */
     routing {
         fileRoutes()
+        devtoolsRoutes(devtoolsToken)
     }
 
     /* 10. Initialize servers */
@@ -181,7 +189,20 @@ suspend fun Application.module() {
                 val cmd = withContext(Dispatchers.IO) { readlnOrNull() } ?: break
                 val clean = cmd.trim().lowercase()
                 if (clean.isNotBlank()) {
-                    Logger.debug { "CMD received: $clean" }
+                    when (clean) {
+                        "token" -> {
+                            val token = UUID.new()
+                            println("Token: $token")
+                            devtoolsToken[token] = getTimeMillis()
+                            devtoolsToken.map { (token, millis) ->
+                                if (!underOneMinute(millis)) {
+                                    devtoolsToken.remove(token)
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <title>Devtools Wall</title>
+</head>
+<body>
+<p>Enter Devtools Token (obtained from terminal by typing 'token') which is valid for one minute.</p>
+<p>Failing to redirect from this page means the token is invalid.</p>
+
+<label for="tokenInput">Token</label><input id="tokenInput" type="text" placeholder="Token">
+<button onclick="go()">Enter</button>
+
+<script>
+    function go() {
+        const t = document.getElementById("tokenInput").value;
+        if (t.length > 0) {
+            window.location = "/devtools?token=" + encodeURIComponent(t);
+        }
+    }
+</script>
+
+</body>
+</html>
