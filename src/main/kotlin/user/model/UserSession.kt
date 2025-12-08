@@ -6,7 +6,8 @@ import kotlin.time.Duration
 /**
  * Representation of a user's authentication session.
  *
- * @property userId User's unique ID, can be used to link to anything (e.g., [PlayerAccount]).
+ * @property userId User's ID to which this session belongs to,
+ *                  can be used to link to anything (e.g., [PlayerAccount]).
  * @property token A unique prove for authentication.
  * @property issuedAt Epoch millis when this session was created.
  * @property expiresAt Epoch millis when this session is no longer valid.
