@@ -106,7 +106,10 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
 
         if (tokenStorage.contains(token) && !timeUnderMinutes(tokenStorage[token]!!, 1)) {
             Logger.debug { "Request to /devtools: token already expired" }
-            call.respondText(insertHtmlTemplate(wallHtml, "{{MESSAGE}}", "Token already expired"), ContentType.Text.Html)
+            call.respondText(
+                insertHtmlTemplate(wallHtml, "{{MESSAGE}}", "Token already expired"),
+                ContentType.Text.Html
+            )
             return@get
         }
 
@@ -125,6 +128,38 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
 
     get("/cmdtest") {
         call.respondText("success!")
+    }
+
+    get("/devtools/cmd-help-text") {
+        val commands = serverContext.commandDispatcher.getAllRegisteredCommands()
+        val html = StringBuilder()
+
+        html.append("<ul>")
+
+        for (cmd in commands) {
+            html.append("<li><b><code>${cmd.commandId}</code></b>: ${cmd.description}")
+            html.append("<ol>")
+
+            for (variant in cmd.variants) {
+                html.append("<li>")
+                html.append("<ul>")
+
+                // Signature list
+                for (sig in variant.signature) {
+                    html.append("<li><code>${sig.id}</code> (<code>${sig.expectedType}</code>): ${sig.description}</li>")
+                }
+
+                html.append("</ul>")
+                html.append("</li>")
+            }
+
+            html.append("</ol>")
+            html.append("</li>")
+        }
+
+        html.append("</ul>")
+
+        call.respondText(html.toString(), ContentType.Text.Html)
     }
 
     webSocket("/devtools/ws") {

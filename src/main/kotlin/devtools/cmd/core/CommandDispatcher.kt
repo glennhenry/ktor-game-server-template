@@ -125,6 +125,13 @@ class CommandDispatcher(private val logger: ILogger) {
         return commands[commandId]?.variants ?: emptyList()
     }
 
+    /**
+     * @return [Set] of registered commands.
+     */
+    fun getAllRegisteredCommands(): Set<Command> {
+        return commands.values.toSet()
+    }
+
     fun init(context: ServerContext) {
         this.serverContext = context
     }

@@ -103,10 +103,21 @@
             border-radius: 0;
             border: solid 1px gray;
         }
+
+        #help-text-drop-area ul,
+        #help-text-drop-area ol {
+            margin-left: 10px;
+            padding-left: 10px;
+            margin-top: 10px;
+        }
+
+        #help-text-drop-area code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
     </style>
 </head>
-
-
 
 <body>
     <div id="tabs-container">
@@ -148,7 +159,14 @@
                 without changing the server’s code or restarting the server, only implementing the command themselves.
             </p>
         </div>
-        <div id="help-text-container"></div>
+        <div id="help-text-container" style="margin-top: 20px;">
+            <h3>Usage</h3>
+            <p>You have to enter command ID followed by its arguments separated by space.</p>
+            <p>Failing to enter sufficient argument will fail.</p>
+            <p>Ensure type matches expectation.</p>
+            <p>Use Ctrl+F to search command.</p>
+            <div id="help-text-drop-area" style="margin-top: 15px;"></div>
+        </div>
     </div>
 </body>
 
@@ -237,8 +255,25 @@
         return { blockNode, outputNode }
     }
 
+    function fetchHelpMessage() {
+        fetch("/devtools/cmd-help-text")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById("help-text-drop-area").innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error sending command:', error);
+            });
+    }
+
     function main() {
         installListener()
+        fetchHelpMessage()
     }
 
     main()

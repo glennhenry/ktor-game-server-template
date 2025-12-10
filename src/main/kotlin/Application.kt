@@ -8,6 +8,7 @@ import context.ServerServices
 import core.data.GameDefinition
 import data.MongoImpl
 import devtools.cmd.core.CommandDispatcher
+import devtools.cmd.impl.ExampleGiveCommand
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -172,6 +173,8 @@ suspend fun Application.module() {
     // initialize components with circular dependency
     wsManager.init(serverContext)
     commandDispatcher.init(serverContext)
+
+    commandDispatcher.register(ExampleGiveCommand())
 
     /* 9. Initialize GameDefinition */
     GameDefinition.initialize()
