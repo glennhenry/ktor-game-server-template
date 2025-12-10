@@ -1,13 +1,231 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <title>Devtools</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #console {
+            display: none;
+        }
+
+        #monitor {
+            display: none;
+        }
+
+        #command {
+            display: block;
+        }
+
+        .tab-row {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+        }
+
+        #tabs-container {
+            padding: 8px;
+        }
+
+        #tool-view {
+            padding: 8px;
+        }
+
+        .tab {
+            border: solid 1px gray;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .tab:hover {
+            background-color: darkgray;
+            cursor: pointer;
+        }
+
+        .command-io {
+            border: solid 1px gray;
+            width: 600px;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            font-family: monospace;
+        }
+
+        #command-output {
+            flex: 1;
+            padding: 8px;
+        }
+
+        .command-block {
+            margin-bottom: 20px;
+        }
+
+        .command-block-input {
+            font-weight: bold;
+        }
+
+        .command-block-output {
+            margin-left: 4px;
+        }
+
+        .command-input {
+            border-top: solid 1px gray;
+            padding: 8px;
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            align-items: center;
+        }
+
+        #command-input-field {
+            border: solid 1px gray;
+            outline: none;
+            padding: 4px;
+            font-family: monospace;
+            width: 300px;
+            overflow-x: auto;
+        }
+
+        #send-command {
+            padding: 4px;
+            border-radius: 0;
+            border: solid 1px gray;
+        }
+    </style>
 </head>
+
+
+
 <body>
-<p>Console and monitor view not implemented yet.</p>
-<h1>Command</h1>
-<em>Refreshing this page kicks you out of it</em>
-<p>enter command: {{}}</p>
+    <div id="tabs-container">
+        <div class="tab-row">
+            <button id="console-tab" class="tab">Console</button>
+            <button id="monitor-tab" class="tab">Monitor</button>
+            <button id="command-tab" class="tab">Command</button>
+        </div>
+    </div>
+    <div id="tool-view">
+        <div id="console">
+            <p>Console (not implemented)</p>
+        </div>
+        <div id="monitor">
+            Server Monitor (not implemented)
+        </div>
+        <div id="command">
+            <div class="command-io">
+                <div id="command-output"></div>
+                <div class="command-input">
+                    <input id="command-input-field" type="text" placeholder="Input command...">
+                    <button id="send-command">Send</button>
+                    <p id="send-command-status">Status: idle</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script>
+    const host = "127.0.0.1"
+    const port = "8080"
+
+    const commandOutputDisplay = document.getElementById("command-output")
+    let commandSendStatus = 0
+
+    function changeDisplay(id, displayState) {
+        document.getElementById(id).style.display = displayState
+    }
+
+    function installListener() {
+        document.getElementById("console-tab").addEventListener("click", function () {
+            changeDisplay("console", "block")
+            changeDisplay("monitor", "none")
+            changeDisplay("command", "none")
+        });
+        document.getElementById("monitor-tab").addEventListener("click", function () {
+            changeDisplay("console", "none")
+            changeDisplay("monitor", "block")
+            changeDisplay("command", "none")
+        });
+        document.getElementById("command-tab").addEventListener("click", function () {
+            changeDisplay("console", "none")
+            changeDisplay("monitor", "none")
+            changeDisplay("command", "block")
+        });
+
+        document.getElementById("send-command").addEventListener("click", function () {
+            sendCommand()
+        })
+    }
+
+    function updateSendStatusMessage(message) {
+        document.getElementById("send-command-status").textContent = message
+    }
+
+    function sendCommand() {
+        if (commandSendStatus == 0) {
+            const inputCmd = document.getElementById("command-input-field").value
+
+            updateSendStatusMessage("Status: sending...")
+            commandSendStatus = 1
+
+            const { blockNode, outputNode } = createCommandBlock(inputCmd);
+            commandOutputDisplay.appendChild(blockNode);
+
+            fetch("/cmdtest")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    updateSendStatusMessage("Status: response received")
+                    outputNode.textContent = data;
+                    commandSendStatus = 0
+                })
+                .catch(error => {
+                    updateSendStatusMessage("Status: Got error (see console)")
+                    outputNode.textContent = "[Error]";
+                    commandSendStatus = 0
+                    console.error('Error sending command:', error);
+                });
+        } else if (commandSendStatus == 1) {
+            updateSendStatusMessage("Status: Please wait...")
+        }
+    }
+
+    function createCommandBlock(inputMessage) {
+        const blockNode = document.createElement("div")
+        blockNode.className = "command-block"
+
+        const inputNode = document.createElement("div")
+        inputNode.className = "command-block-input"
+        inputNode.textContent = `> ${inputMessage}`
+
+        const outputNode = document.createElement("div")
+        outputNode.className = "command-block-output"
+        outputNode.textContent = "..."
+
+        blockNode.appendChild(inputNode)
+        blockNode.appendChild(outputNode)
+
+        return { blockNode, outputNode }
+    }
+
+    function main() {
+        installListener()
+    }
+
+    main()
+</script>
+
 </html>
