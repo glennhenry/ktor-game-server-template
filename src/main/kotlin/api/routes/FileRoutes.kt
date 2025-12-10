@@ -28,4 +28,9 @@ fun Route.fileRoutes() {
     }
 
     staticFiles("docs", File("docs"))
+
+    get("/favicon.ico") {
+        val favicon = File("static/assets/favicon.ico")
+        call.respondFile(favicon)
+    }
 }

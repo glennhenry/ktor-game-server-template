@@ -165,3 +165,7 @@ See `Devtools.md` for details.
   - server monitoring
   - ability to execute command from API
 - rate limiter, flood anticipator
+
+# Credits
+
+- favicon: https://favicon.io/emoji-favicons/skull/
