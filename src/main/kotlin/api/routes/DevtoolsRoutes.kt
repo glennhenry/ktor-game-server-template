@@ -73,7 +73,7 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
 
         // skip on developmentMode
         if (application.developmentMode) {
-            Logger.debug { "Request to /devtools skipped (development mode)" }
+            Logger.debug { "Request to /devtools auth skipped (development mode)" }
             call.respondFile(devtoolsHtml)
             return@get
         }

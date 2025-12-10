@@ -50,17 +50,21 @@
             cursor: pointer;
         }
 
-        .command-io {
+        #command-container {
+            width: max-content;
+        }
+
+        .command-output-container {
             border: solid 1px gray;
             width: 600px;
             height: 400px;
-            overflow-y: auto;
+            overflow-y: scroll;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse;
             font-family: monospace;
         }
 
-        #command-output {
+        #command-output-display {
             flex: 1;
             padding: 8px;
         }
@@ -78,7 +82,6 @@
         }
 
         .command-input {
-            border-top: solid 1px gray;
             padding: 8px;
             display: flex;
             flex-direction: row;
@@ -120,24 +123,37 @@
         <div id="monitor">
             Server Monitor (not implemented)
         </div>
-        <div id="command">
-            <div class="command-io">
-                <div id="command-output"></div>
-                <div class="command-input">
-                    <input id="command-input-field" type="text" placeholder="Input command...">
-                    <button id="send-command">Send</button>
-                    <p id="send-command-status">Status: idle</p>
-                </div>
+        <div id="command-container">
+            <div class="command-output-container">
+                <div id="command-output-display"></div>
+            </div>
+            <div class="command-input">
+                <input id="command-input-field" type="text" placeholder="Input command...">
+                <button id="send-command">Send</button>
+                <p id="send-command-status">Status: idle</p>
             </div>
         </div>
+        <div>
+            <h3>About</h3>
+            <p>This command tool enable interaction with the server during runtime.</p>
+            <p>
+                By implementing the <code style="font-size: large;">Command</code> interface, you can perform various
+                server-side operations
+            </p>
+            <p>such as scanning local files, modifying data, triggering tasks, and more.</p>
+            <p>
+                All of these actions can be executed directly with commands,
+            </p>
+            <p>
+                without changing the server’s code or restarting the server, only implementing the command themselves.
+            </p>
+        </div>
+        <div id="help-text-container"></div>
     </div>
 </body>
 
 <script>
-    const host = "127.0.0.1"
-    const port = "8080"
-
-    const commandOutputDisplay = document.getElementById("command-output")
+    const commandOutputDisplay = document.getElementById("command-output-display")
     let commandSendStatus = 0
 
     function changeDisplay(id, displayState) {
