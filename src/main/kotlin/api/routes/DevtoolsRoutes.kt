@@ -2,8 +2,11 @@ package api.routes
 
 import context.ServerContext
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.routing.application
 import io.ktor.server.websocket.webSocket
 import io.ktor.util.date.*
 import io.ktor.websocket.CloseReason
@@ -80,9 +83,7 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
 
         val token = call.request.queryParameters["token"]
         val cookie = call.request.cookies["devtools-clientId"]
-
-        val cookieValid = cookie != null &&
-                serverContext.sessionManager.verify(cookie)
+        val cookieValid = cookie != null && serverContext.sessionManager.verify(cookie)
 
         // user already authenticated before, does not need token from query parameter
         if (cookieValid) {
@@ -123,14 +124,14 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
     }
 
     get("/devtools/server-status") {
-        call.respond("status received")
-    }
+        if (!call.ensureSession { serverContext.sessionManager.verify(it) }) return@get
 
-    get("/cmdtest") {
-        call.respondText("success!")
+        call.respond("Status received.")
     }
 
     get("/devtools/cmd-help-text") {
+        if (!call.ensureSession { serverContext.sessionManager.verify(it) }) return@get
+
         val commands = serverContext.commandDispatcher.getAllRegisteredCommands()
         val html = StringBuilder()
 
@@ -203,4 +204,16 @@ fun timeUnderMinutes(timeMillis: Long, minutes: Int): Boolean {
 
 fun insertHtmlTemplate(file: File, templateId: String, message: String): String {
     return file.readText().replace(templateId, message)
+}
+
+suspend fun ApplicationCall.ensureSession(verify: (String) -> Boolean): Boolean {
+    val cookie = request.cookies["devtools-clientId"]
+    val cookieValid = cookie != null && verify(cookie)
+
+    if (!cookieValid && !application.developmentMode) {
+        respond(HttpStatusCode.Forbidden, "Session invalid, please re-login")
+        return false
+    }
+
+    return true
 }
