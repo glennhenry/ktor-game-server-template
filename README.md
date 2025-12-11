@@ -101,7 +101,7 @@ An external web-based developer toolkit that provides a user interface for monit
 
 - Commands: The server offers users the ability to send commands to the server for monitoring and to control its behavior.
 
-See `Devtools.md` for details.
+See `DevTools.md` for details.
 
 ## Structure
 
