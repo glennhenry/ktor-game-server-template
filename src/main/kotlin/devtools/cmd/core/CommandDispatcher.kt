@@ -24,6 +24,7 @@ import utils.logging.Logger
 class CommandDispatcher(private val logger: ILogger) {
     private lateinit var serverContext: ServerContext
     private val commands = mutableMapOf<String, Command>()
+    private val parser = CommandParser()
 
     /**
      * Require at least one character that is not a whitespace.
@@ -88,6 +89,27 @@ class CommandDispatcher(private val logger: ILogger) {
     }
 
     /**
+     * Handle raw command request of plain string.
+     *
+     * Internally parse the raw command and use the [handleCommand].
+     *
+     * @return [CommandResult] that represents the outcome.
+     */
+    fun handleRawCommand(raw: String): CommandResult {
+        val request = try {
+            parser.parse(raw)
+        } catch (e: IllegalArgumentException) {
+            // just parse error which is not severe
+            return CommandResult.Error("Parsing error: ${e.message}")
+        } catch (e: Exception) {
+            Logger.error { "Unexpected parsing error on handleRawCommand: ${e.message}" }
+            return CommandResult.Error("Parsing error: ${e.message}")
+        }
+
+        return handleCommand(request)
+    }
+
+    /**
      * Handle command request.
      *
      * It involves doing a lookup to the registered commands, then
@@ -105,7 +127,7 @@ class CommandDispatcher(private val logger: ILogger) {
             Logger.info { "Done executing command '${request.commandId}' with result=$result" }
             return result
         } catch (e: Exception) {
-            val msg = "Uncaught error while executing the command '${request.commandId}'; error: ${e.message ?: e}"
+            val msg = "Unexpected error while executing the command '${request.commandId}'; error: ${e.message ?: e}"
             Logger.error { msg }
             return CommandResult.Error(msg)
         }
