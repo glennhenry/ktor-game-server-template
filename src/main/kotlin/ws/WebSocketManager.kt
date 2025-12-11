@@ -1,9 +1,14 @@
 package ws
 
 import context.ServerContext
-import io.ktor.server.websocket.DefaultWebSocketServerSession
-import io.ktor.websocket.Frame
-import kotlinx.serialization.json.Json
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.put
+import utils.JSON
+import utils.logging.Logger
 import java.util.concurrent.ConcurrentHashMap
 
 typealias ClientSessions = ConcurrentHashMap<String, DefaultWebSocketServerSession>
@@ -50,11 +55,37 @@ class WebSocketManager {
      * Handle websocket message from the client [session].
      */
     suspend fun handleMessage(session: DefaultWebSocketServerSession, message: WsMessage) {
+        if (message.payload == null) {
+            session.send(
+                createMessage(
+                    type = "error",
+                    payload = buildJsonObject {
+                        put("message", "JSON payload is null")
+                    }
+                )
+            )
+            return
+        }
+
         when (message.type) {
-            "ping" -> {
-                session.send(Frame.Text(Json.encodeToString(WsMessage(type = "ping", payload = null))))
+            WsMessageType.CMD_INPUT -> {
+                val rawCmd = JSON.json.decodeFromJsonElement<String>(message.payload)
+                val result = serverContext.commandDispatcher.handleRawCommand(rawCmd)
+
+                session.send(
+                    createMessage(
+                        type = WsMessageType.CMD_OUTPUT,
+                        payload = buildJsonObject {
+                            put("result", result.toString())
+                        }
+                    )
+                )
             }
         }
+    }
+
+    private fun createMessage(type: String, payload: JsonElement): Frame {
+        return Frame.Text(JSON.encode(WsMessage(type, payload)))
     }
 
     fun init(context: ServerContext) {

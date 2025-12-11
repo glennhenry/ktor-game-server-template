@@ -50,24 +50,6 @@ import kotlin.time.Duration.Companion.minutes
  *         - If cookie token is valid, server return JSON for server status.
  *     - Client can type command and it will be executed in the server.
  * 8. When session exceeded 6 hours, user needs to refresh. (step 6A).
- *
- *  next todo:
- *  1. create client side
- *  2. create UI (3 toggle tabs: console, monitor, command)
- *      - console empty
- *      - monitor empty
- *      - command top left result console, under that text input, under that about and help guide,
- *      on right side help message generated
- *          - generate help message by manual template: substituting {{help}} on devtools.html
- *          with a generated HTML of all commands in command dispatcher
- *  3. upon login
- *      - ensure cookie is set
- *      - detect devtools.html
- *      - then connect to websocket
- *          - ensure cookie is included on each websocket message
- *  4. websocket manager try sending log message on console
- *  5. try sending status from monitoring
- *  6. try sending command, see if ws manager receives it, then get results
  */
 fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<String, Long>) {
     get("/devtools") {
@@ -126,7 +108,7 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
     get("/devtools/server-status") {
         if (!call.ensureSession { serverContext.sessionManager.verify(it) }) return@get
 
-        call.respond("Status received.")
+        call.respond("Status received (work in progress).")
     }
 
     get("/devtools/cmd-help-text") {
@@ -164,19 +146,19 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
     }
 
     webSocket("/devtools/ws") {
-        val token = call.request.cookies["devtools-clientId"]
-        if (token == null || !serverContext.sessionManager.verify(token)) {
+        if (!call.ensureSession { serverContext.sessionManager.verify(it) }) {
             close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "Invalid token"))
             return@webSocket
         }
 
+        // shouldn't be null after ensureSession, unless devmode
+        val token = call.request.cookies["devtools-clientId"] ?: "DEV-${getTimeMillis()}"
         serverContext.wsManager.addClient(token, this)
 
         try {
             for (frame in incoming) {
                 if (frame is Frame.Text) {
                     val msg = frame.readText()
-                    Logger.info { "got ws: $msg" }
                     try {
                         val wsMessage = Json.decodeFromString<WsMessage>(msg)
                         if (wsMessage.type == "close") {
@@ -193,7 +175,7 @@ fun Route.devtoolsRoutes(serverContext: ServerContext, tokenStorage: MutableMap<
             Logger.error { "Error in websocket for client $this: $e" }
         } finally {
             serverContext.wsManager.removeClient(token)
-            Logger.info { "Client $this disconnected from websocket debug." }
+            Logger.info { "Client $this disconnected from websocket" }
         }
     }
 }

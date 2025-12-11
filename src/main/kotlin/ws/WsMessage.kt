@@ -21,3 +21,9 @@ data class WsMessage(
     val type: String,
     val payload: JsonElement? = null,
 )
+
+object WsMessageType {
+    const val CMD_INPUT = "dev:cmdin"
+    const val CMD_OUTPUT = "dev:cmdout"
+    const val ERROR = "error"
+}

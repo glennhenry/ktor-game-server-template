@@ -163,7 +163,11 @@
             <h3>Usage</h3>
             <p>You have to enter command ID followed by its arguments separated by space.</p>
             <p>Failing to enter sufficient argument will fail.</p>
+            <p>More arguments than expected will be ignored.</p>
+            <p>Leading and trailing spaces are ignored.</p>
             <p>Ensure type matches expectation.</p>
+            <p>Some types are converted automatically (e.g., number and boolean may be captured as string).</p>
+            <p>A correct command syntax: 'give playerABC water 100'</p>
             <p>Use Ctrl+F to search command.</p>
             <div id="help-text-drop-area" style="margin-top: 15px;"></div>
         </div>
@@ -171,8 +175,30 @@
 </body>
 
 <script>
-    const commandOutputDisplay = document.getElementById("command-output-display")
     let commandSendStatus = 0
+    let lastOutputNode = null;
+
+    const websocket = new WebSocket(`ws://127.0.0.1:8080/devtools/ws`);
+    websocket.onopen = () => { console.log("WS connected.") };
+    websocket.onmessage = (event) => {
+        try {
+            const msg = JSON.parse(event.data);
+            const type = msg.type;
+            const payload = msg.payload;
+
+            switch (type) {
+                case "dev:cmdout":
+                    updateSendStatusMessage("Status: response received")
+                    lastOutputNode.textContent = payload.result;
+                    commandSendStatus = 0
+                    break;
+                default:
+                    console.warn("Unknown message type:", type);
+            }
+        } catch (e) {
+            console.error("Invalid log format", e);
+        }
+    };
 
     function changeDisplay(id, displayState) {
         document.getElementById(id).style.display = displayState
@@ -212,26 +238,14 @@
             commandSendStatus = 1
 
             const { blockNode, outputNode } = createCommandBlock(inputCmd);
-            commandOutputDisplay.appendChild(blockNode);
+            document.getElementById("command-output-display").appendChild(blockNode);
+            lastOutputNode = outputNode;
 
-            fetch("/cmdtest")
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    updateSendStatusMessage("Status: response received")
-                    outputNode.textContent = data;
-                    commandSendStatus = 0
-                })
-                .catch(error => {
-                    updateSendStatusMessage("Status: Got error (see console)")
-                    outputNode.textContent = "[Error]";
-                    commandSendStatus = 0
-                    console.error('Error sending command:', error);
-                });
+            const request = {
+                type: "dev:cmdin",
+                payload: inputCmd
+            }
+            websocket.send(JSON.stringify(request))
         } else if (commandSendStatus == 1) {
             updateSendStatusMessage("Status: Please wait...")
         }
@@ -271,12 +285,10 @@
             });
     }
 
-    function main() {
+    document.addEventListener('DOMContentLoaded', () => {
         installListener()
         fetchHelpMessage()
-    }
-
-    main()
+    });
 </script>
 
 </html>
