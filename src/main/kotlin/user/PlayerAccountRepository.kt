@@ -6,7 +6,8 @@ import data.collection.PlayerAccount
  * Repository for [PlayerAccount].
  */
 interface PlayerAccountRepository {
-    suspend fun doesUserExist(username: String): Result<Boolean>
+    suspend fun doesUsernameExist(username: String): Result<Boolean>
+    suspend fun doesEmailExist(email: String): Result<Boolean>
 
     suspend fun getPlayerAccountByName(username: String): Result<PlayerAccount?>
     suspend fun getPlayerAccountById(playerId: String): Result<PlayerAccount?>

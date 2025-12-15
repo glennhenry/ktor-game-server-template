@@ -5,8 +5,6 @@ import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import data.MongoImpl
 import data.collection.PlayerAccount
-import example.ExampleModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.bson.Document
 import user.auth.SessionManager
@@ -44,7 +42,7 @@ class TestDefaultAuthProvider {
         )
         collection.insertOne(account)
 
-        assertTrue(provider.doesUserExist("name"))
+        assertTrue(provider.doesUsernameExist("name"))
     }
 
     @Test
@@ -59,7 +57,7 @@ class TestDefaultAuthProvider {
         val repo = PlayerAccountRepositoryMongo(collection)
         val provider = DefaultAuthProvider(db, repo, manager)
 
-        assertFalse(provider.doesUserExist("xyz"))
+        assertFalse(provider.doesUsernameExist("xyz"))
     }
 
     @Test
@@ -75,7 +73,7 @@ class TestDefaultAuthProvider {
         val provider = DefaultAuthProvider(db, repo, manager)
 
         provider.register("helloworld", "kotlinktor")
-        assertTrue(provider.doesUserExist("helloworld"))
+        assertTrue(provider.doesUsernameExist("helloworld"))
     }
 
     @Test

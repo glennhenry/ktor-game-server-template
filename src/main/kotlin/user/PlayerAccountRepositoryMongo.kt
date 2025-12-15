@@ -41,10 +41,19 @@ class PlayerAccountRepositoryMongo(val accountCollection: MongoCollection<Player
         }
     }
 
-    override suspend fun doesUserExist(username: String): Result<Boolean> {
+    override suspend fun doesUsernameExist(username: String): Result<Boolean> {
         return runMongoCatching {
             accountCollection
                 .find(Filters.eq("profile.displayName", username))
+                .projection(null)
+                .firstOrNull() != null
+        }
+    }
+
+    override suspend fun doesEmailExist(email: String): Result<Boolean> {
+        return runMongoCatching {
+            accountCollection
+                .find(Filters.eq("profile.email", email))
                 .projection(null)
                 .firstOrNull() != null
         }
