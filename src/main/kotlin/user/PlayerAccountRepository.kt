@@ -9,9 +9,9 @@ interface PlayerAccountRepository {
     suspend fun doesUsernameExist(username: String): Result<Boolean>
     suspend fun doesEmailExist(email: String): Result<Boolean>
 
-    suspend fun getPlayerAccountByName(username: String): Result<PlayerAccount?>
-    suspend fun getPlayerAccountById(playerId: String): Result<PlayerAccount?>
-    suspend fun getPlayerIdFromName(username: String): Result<String?>
+    suspend fun getPlayerAccountByName(username: String): Result<PlayerAccount>
+    suspend fun getPlayerAccountById(playerId: String): Result<PlayerAccount>
+    suspend fun getPlayerIdFromName(username: String): Result<String>
 
     suspend fun updatePlayerAccount(playerId: String, account: PlayerAccount): Result<Unit>
     suspend fun updateLastLogin(playerId: String, lastLogin: Long): Result<Unit>

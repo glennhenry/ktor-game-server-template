@@ -13,7 +13,7 @@ import org.bson.Document
 import kotlin.io.encoding.Base64
 
 class PlayerAccountRepositoryMongo(val accountCollection: MongoCollection<PlayerAccount>) : PlayerAccountRepository {
-    override suspend fun getPlayerAccountByName(username: String): Result<PlayerAccount?> {
+    override suspend fun getPlayerAccountByName(username: String): Result<PlayerAccount> {
         return runMongoCatching {
             accountCollection
                 .find(Filters.eq("profile.displayName", username))
@@ -22,7 +22,7 @@ class PlayerAccountRepositoryMongo(val accountCollection: MongoCollection<Player
         }
     }
 
-    override suspend fun getPlayerAccountById(playerId: String): Result<PlayerAccount?> {
+    override suspend fun getPlayerAccountById(playerId: String): Result<PlayerAccount> {
         return runMongoCatching {
             accountCollection
                 .find(Filters.eq("playerId", playerId))
@@ -31,7 +31,7 @@ class PlayerAccountRepositoryMongo(val accountCollection: MongoCollection<Player
         }
     }
 
-    override suspend fun getPlayerIdFromName(username: String): Result<String?> {
+    override suspend fun getPlayerIdFromName(username: String): Result<String> {
         return runMongoCatching {
             accountCollection
                 .find(Filters.eq("profile.displayName", username))
