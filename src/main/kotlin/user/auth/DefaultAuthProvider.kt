@@ -36,17 +36,17 @@ class DefaultAuthProvider(
 
     override suspend fun doesUsernameExist(username: String): Boolean {
         val result = playerAccountRepository.doesUsernameExist(username)
-        result.onFailure {
+        return result.getOrElse {
             Logger.error { "Failure on doesUsernameExist for username=$username: ${it.message}" }
+            true
         }
-        return result.getOrThrow()
     }
 
     override suspend fun doesEmailExist(email: String): Boolean {
         val result = playerAccountRepository.doesEmailExist(email)
-        result.onFailure {
+        return result.getOrElse {
             Logger.error { "Failure on doesEmailExist for email=$email: ${it.message}" }
+            true
         }
-        return result.getOrThrow()
     }
 }
