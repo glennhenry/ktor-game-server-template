@@ -207,12 +207,7 @@ object Logger : ILogger {
      */
     private fun buildSourceHint(): String {
         val caller = Thread.currentThread().stackTrace
-            .dropWhile { element ->
-                element.className.startsWith("utils.logging.Logger") ||
-                        element.className.startsWith("utils.logging.ILogger") ||
-                        element.className.startsWith("java.lang.Thread") ||
-                        element.className.contains("ThreadPoolExecutor")
-            }
+            .dropWhile { element -> LOGGER_CALL_WHITELIST.contains(element.className) }
             .firstOrNull() ?: return "(UnknownSource)"
 
         val file = caller.fileName
@@ -304,6 +299,14 @@ object Logger : ILogger {
         return newFile
     }
 }
+
+/**
+ * Contains stack trace to ignore, usually from log source file itself,
+ * thread, executor, or any logging utilities.
+ */
+val LOGGER_CALL_WHITELIST = listOf(
+    "utils.logging.Logger", "utils.logging.ILogger", "java.lang.Thread", "ThreadPoolExecutor",
+)
 
 /**
  * Raw console access that bypass Jansi.
