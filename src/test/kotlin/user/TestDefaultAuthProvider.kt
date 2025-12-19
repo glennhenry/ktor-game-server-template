@@ -44,6 +44,7 @@ class TestDefaultAuthProvider {
         collection.insertOne(account)
 
         assertTrue(provider.doesUsernameExist("name"))
+        assertFalse(provider.isUsernameAvailable("name"))
     }
 
     @Test
@@ -59,6 +60,7 @@ class TestDefaultAuthProvider {
         val provider = DefaultAuthProvider(db, repo, manager)
 
         assertFalse(provider.doesUsernameExist("xyz"))
+        assertTrue(provider.isUsernameAvailable("xyz"))
     }
 
     @Test
@@ -75,6 +77,7 @@ class TestDefaultAuthProvider {
 
         provider.register("helloworld", "kotlinktor")
         assertTrue(provider.doesUsernameExist("helloworld"))
+        assertFalse(provider.isUsernameAvailable("helloworld"))
     }
 
     @Test
@@ -94,7 +97,7 @@ class TestDefaultAuthProvider {
     }
 
     @Test
-    fun `test login wrong credentials return failure result`() = runTest {
+    fun `test login wrong credentials return null`() = runTest {
         val mongoDb = initMongo()
         val collection = mongoDb.getCollection<PlayerAccount>("player_account")
         collection.drop()

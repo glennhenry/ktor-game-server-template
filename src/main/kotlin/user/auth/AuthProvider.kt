@@ -33,7 +33,17 @@ interface AuthProvider {
     suspend fun doesUsernameExist(username: String): Boolean
 
     /**
+     * Check whether [username] is viable for registration.
+     */
+    suspend fun isUsernameAvailable(username: String): Boolean
+
+    /**
      * Check whether a user with [email] exists.
      */
     suspend fun doesEmailExist(email: String): Boolean
+
+    /**
+     * Check whether [email] is viable for registration.
+     */
+    suspend fun isEmailAvailable(email: String): Boolean
 }

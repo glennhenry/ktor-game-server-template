@@ -7,7 +7,9 @@ import data.collection.PlayerAccount
  */
 class EmptyPlayerAccountRepository : PlayerAccountRepository {
     override suspend fun doesUsernameExist(username: String): Result<Boolean> = TODO("ONLY TEST")
+    override suspend fun isUsernameAvailable(username: String): Result<Boolean> = TODO("ONLY TEST")
     override suspend fun doesEmailExist(email: String): Result<Boolean> = TODO("ONLY TEST")
+    override suspend fun isEmailAvailable(email: String): Result<Boolean>  = TODO("ONLY TEST")
     override suspend fun getPlayerAccountByName(username: String): Result<PlayerAccount> = TODO("ONLY TEST")
     override suspend fun getPlayerAccountById(playerId: String): Result<PlayerAccount> = TODO("ONLY TEST")
     override suspend fun getPlayerIdFromName(username: String): Result<String> = TODO("ONLY TEST")

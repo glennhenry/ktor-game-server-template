@@ -38,7 +38,15 @@ class DefaultAuthProvider(
         val result = playerAccountRepository.doesUsernameExist(username)
         return result.getOrElse {
             Logger.error { "Failure on doesUsernameExist for username=$username: ${it.message}" }
-            true
+            true // check error -> assume username exists
+        }
+    }
+
+    override suspend fun isUsernameAvailable(username: String): Boolean {
+        val result = playerAccountRepository.isUsernameAvailable(username)
+        return result.getOrElse {
+            Logger.error { "Failure on isUsernameAvailable for username=$username: ${it.message}" }
+            false // check error -> assume username not available
         }
     }
 
@@ -46,7 +54,15 @@ class DefaultAuthProvider(
         val result = playerAccountRepository.doesEmailExist(email)
         return result.getOrElse {
             Logger.error { "Failure on doesEmailExist for email=$email: ${it.message}" }
-            true
+            true // check error -> assume email exists
+        }
+    }
+
+    override suspend fun isEmailAvailable(email: String): Boolean {
+        val result = playerAccountRepository.isEmailAvailable(email)
+        return result.getOrElse {
+            Logger.error { "Failure on isEmailAvailable for email=$email: ${it.message}" }
+            false // check error -> assume email not available
         }
     }
 }
