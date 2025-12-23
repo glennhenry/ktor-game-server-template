@@ -55,6 +55,9 @@ import kotlin.time.Duration.Companion.seconds
 fun main(args: Array<String>) = EngineMain.main(args)
 
 const val CHANGE_ME_PROD_DB_NAME = "CHANGE_ME-prod-DB"
+const val SERVER_ADDRESS = "127.0.0.1"
+const val SERVER_API_FILE_PORT = 8080
+const val SERVER_SOCKET_PORT = 7777
 
 @Suppress("unused")
 suspend fun Application.module() {
@@ -193,12 +196,12 @@ suspend fun Application.module() {
     /* 11. Initialize servers */
     // build server configs
     val gameServerConfig = GameServerConfig(
-        host = config().getString("game.host", "127.0.0.1"),
-        port = config().getInt("game.host", 7777)
+        host = config().getString("game.host", SERVER_ADDRESS),
+        port = config().getInt("game.host", SERVER_SOCKET_PORT)
     )
 
     val servers = buildList<Server> {
-        GameServer(gameServerConfig)
+        add(GameServer(gameServerConfig))
     }
 
     /* 12. Run all the servers */
@@ -230,10 +233,7 @@ suspend fun Application.module() {
         }
     }
 
-    val apiPort = config().getString("ktor.deployment.port", "8080")
-
-    Logger.info { "All server started successfully" }
-    Logger.info { "Socket server listening on ${gameServerConfig.host}:${gameServerConfig.port}" }
+    val apiPort = config().getString("ktor.deployment.port", SERVER_API_FILE_PORT.toString())
     Logger.info { "API server available at ${gameServerConfig.host}:$apiPort" }
 
     if (File("docs/index.html").exists()) {

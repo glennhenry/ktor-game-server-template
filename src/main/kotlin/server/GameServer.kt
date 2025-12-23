@@ -1,5 +1,7 @@
 package server
 
+import SERVER_ADDRESS
+import SERVER_SOCKET_PORT
 import context.ServerContext
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
@@ -22,8 +24,8 @@ import java.net.SocketException
 import kotlin.system.measureTimeMillis
 
 data class GameServerConfig(
-    val host: String = "127.0.0.1",
-    val port: Int = 7777,
+    val host: String = SERVER_ADDRESS,
+    val port: Int = SERVER_SOCKET_PORT,
 )
 
 class GameServer(private val config: GameServerConfig) : Server {
@@ -69,6 +71,8 @@ class GameServer(private val config: GameServerConfig) : Server {
             return
         }
         running = true
+
+        Logger.info { "Socket server listening on ${config.host}:${config.port}" }
 
         gameServerScope.launch {
             try {
