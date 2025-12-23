@@ -2,6 +2,7 @@ package server.messaging
 
 import server.handler.DefaultHandler
 import utils.logging.Logger
+import utils.logging.Logger.LOG_INDENT_PREFIX
 
 /**
  * Dispatch [SocketMessage] to the registered handlers.
@@ -24,7 +25,14 @@ class SocketMessageDispatcher() {
 
         return (matched.ifEmpty { listOf(default) }).also { selected ->
             Logger.debug {
-                "Message type=${msg.type()} handled by: ${selected.joinToString { it.name }} | message=$msg"
+                buildString {
+                    appendLine("[SOCKET DISPATCH]")
+                    appendLine("$LOG_INDENT_PREFIX handlers  :")
+                    selected.forEach {
+                        appendLine("$LOG_INDENT_PREFIX   - ${it.name}")
+                    }
+                    append("$LOG_INDENT_PREFIX message   : $msg")
+                }
             }
         }
     }

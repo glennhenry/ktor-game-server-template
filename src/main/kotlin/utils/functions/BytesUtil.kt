@@ -7,3 +7,9 @@ fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
     }
     return true
 }
+
+fun ByteArray.safeAsciiString(): String {
+    return this.map {
+        if (it in 32..126) it.toInt().toChar() else '.'
+    }.joinToString("")
+}

@@ -17,5 +17,5 @@ class DefaultMessage(override val payload: String) : SocketMessage<String> {
     override fun type(): String = type
     override fun isValid(): Boolean = true
     override fun isEmpty(): Boolean = payload.isEmpty()
-    override fun toString(): String = payload
+    override fun toString(): String = "DefaultMessage($payload)"
 }

@@ -7,6 +7,7 @@ import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import utils.logging.Logger
+import utils.logging.Logger.LOG_INDENT_PREFIX
 
 /**
  * Default implementation of [Connection] which is based on a real socket.
@@ -46,7 +47,12 @@ class DefaultConnection(
     override suspend fun write(input: ByteArray, logOutput: Boolean, logFull: Boolean) {
         try {
             if (logOutput) {
-                Logger.debug(logFull = logFull) { "Sending raw: ${input.decodeToString()}" }
+                Logger.debug(logFull = logFull) {
+                    buildString {
+                        appendLine("[SOCKET SEND]")
+                        append("$LOG_INDENT_PREFIX raw: ${input.decodeToString()}")
+                    }
+                }
             }
             outputChannel.writeFully(input)
         } catch (e: Exception) {

@@ -16,9 +16,6 @@ class DefaultHandler : SocketMessageHandler {
     }
 
     override suspend fun handle(ctx: HandlerContext) = with(ctx) {
-        Logger.warn {
-            "Handler of type=${message.type()} is either unregistered (register it on GameServer.kt) or unimplemented"
-        }
-
+        Logger.warn { "No handler registered/implemented for type=${message.type()}" }
     }
 }

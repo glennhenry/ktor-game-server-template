@@ -19,7 +19,9 @@ import server.messaging.SocketMessageDispatcher
 import server.protocol.codec.DefaultCodec
 import server.protocol.MessageFormat
 import server.tasks.TaskName
+import utils.functions.safeAsciiString
 import utils.logging.Logger
+import utils.logging.Logger.LOG_INDENT_PREFIX
 import java.net.SocketException
 import kotlin.system.measureTimeMillis
 
@@ -109,14 +111,18 @@ class GameServer(private val config: GameServerConfig) : Server {
 
                     serverContext.onlinePlayerRegistry.updateLastActivity(connection.playerId)
 
+                    // start handle
                     var msgType = "[Undetermined]"
                     val elapsed = measureTimeMillis {
                         msgType = handleMessage(connection, data)
                     }
-
+                    // end handle
                     Logger.debug {
                         buildString {
-                            appendLine("<===== [SOCKET END] of type $msgType handled for playerId=${connection.playerId} in ${elapsed}ms")
+                            appendLine("<===== [SOCKET END]")
+                            appendLine("$LOG_INDENT_PREFIX type      : $msgType")
+                            appendLine("$LOG_INDENT_PREFIX playerId  : ${connection.playerId}")
+                            appendLine("$LOG_INDENT_PREFIX duration  : ${elapsed}ms")
                             append("====================================================================================================")
                         }
                     }
@@ -205,7 +211,14 @@ class GameServer(private val config: GameServerConfig) : Server {
 
                 val msgType = message.type()
                 Logger.debug {
-                    "=====> [SOCKET START]: of type $msgType, raw: $data for playerId=${connection.playerId}, bytes=${data.size} (decoded by ${format.codec.name})"
+                    buildString {
+                        appendLine("=====> [SOCKET RECEIVE]")
+                        appendLine("$LOG_INDENT_PREFIX type      : $msgType")
+                        appendLine("$LOG_INDENT_PREFIX playerId  : ${connection.playerId}")
+                        appendLine("$LOG_INDENT_PREFIX bytes     : ${data.size}")
+                        appendLine("$LOG_INDENT_PREFIX codec     : ${format.codec.name}")
+                        append("$LOG_INDENT_PREFIX raw       : ${data.safeAsciiString()}")
+                    }
                 }
 
                 goodCodecs.add(msgType to format)

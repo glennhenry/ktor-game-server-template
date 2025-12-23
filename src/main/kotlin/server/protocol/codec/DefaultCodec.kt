@@ -1,6 +1,7 @@
 package server.protocol.codec
 
 import server.protocol.SocketCodec
+import utils.functions.safeAsciiString
 
 /**
  * The default and example implementation of message serializer/deserializer.
@@ -14,7 +15,7 @@ object DefaultSerializer {
     }
 
     fun deserialize(output: ByteArray): String {
-        return output.toString()
+        return output.safeAsciiString()
     }
 }
 

@@ -298,6 +298,15 @@ object Logger : ILogger {
         if (newFile.exists()) newFile.delete()
         return newFile
     }
+
+    /**
+     * If you use `appendLine` when building log message,
+     * you will want the new line to be aligned.
+     *
+     * Use this constant indent string to ensure new lines in log message
+     * are aligned with each new log call.
+     */
+    const val LOG_INDENT_PREFIX = "                                             "
 }
 
 /**
