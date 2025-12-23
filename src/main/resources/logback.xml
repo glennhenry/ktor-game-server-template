@@ -6,6 +6,7 @@
     </appender>
 
     <!-- Root logger: keep info for your own app -->
+    <!--  set WARN to INFO to see API logs  -->
     <root level="WARN">
         <appender-ref ref="STDOUT" />
     </root>
