@@ -1,4 +1,4 @@
-package devtools.cmd.core
+package devtools.command.core
 
 /**
  * Represent a single command request of [commandId] with the input of [arguments].

@@ -1,11 +1,11 @@
-package devtools.cmd.impl
+package devtools.command.impl
 
 import context.ServerContext
-import devtools.cmd.core.ArgumentCollection
-import devtools.cmd.core.ArgumentDescriptor
-import devtools.cmd.core.Command
-import devtools.cmd.core.CommandResult
-import devtools.cmd.core.CommandVariant
+import devtools.command.core.ArgumentCollection
+import devtools.command.core.ArgumentDescriptor
+import devtools.command.core.Command
+import devtools.command.core.CommandResult
+import devtools.command.core.CommandVariant
 import kotlin.text.toIntOrNull
 
 class ExampleCommand : Command {

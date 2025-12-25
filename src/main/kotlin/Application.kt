@@ -7,8 +7,8 @@ import context.ServerContext
 import context.ServerServices
 import core.data.GameDefinition
 import data.MongoImpl
-import devtools.cmd.core.CommandDispatcher
-import devtools.cmd.impl.ExampleCommand
+import devtools.command.core.CommandDispatcher
+import devtools.command.impl.ExampleCommand
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

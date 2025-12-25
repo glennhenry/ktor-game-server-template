@@ -2,14 +2,14 @@ package devtools
 
 import com.mongodb.assertions.Assertions.assertTrue
 import context.ServerContext
-import devtools.cmd.core.ArgumentCollection
-import devtools.cmd.core.ArgumentDescriptor
-import devtools.cmd.core.Command
-import devtools.cmd.core.CommandDispatcher
-import devtools.cmd.core.CommandRequest
-import devtools.cmd.core.CommandResult
-import devtools.cmd.core.CommandVariant
-import devtools.cmd.core.variantsAsString
+import devtools.command.core.ArgumentCollection
+import devtools.command.core.ArgumentDescriptor
+import devtools.command.core.Command
+import devtools.command.core.CommandDispatcher
+import devtools.command.core.CommandRequest
+import devtools.command.core.CommandResult
+import devtools.command.core.CommandVariant
+import devtools.command.core.variantsAsString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.assertThrows
 import utils.JSON

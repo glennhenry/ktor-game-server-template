@@ -1,4 +1,4 @@
-package devtools.cmd.core
+package devtools.command.core
 
 /**
  * Represents a specific variant of a command.

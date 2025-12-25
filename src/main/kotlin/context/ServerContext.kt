@@ -4,7 +4,7 @@ import core.PlayerService
 import core.ServerService
 import data.Database
 import data.EmptyDatabase
-import devtools.cmd.core.CommandDispatcher
+import devtools.command.core.CommandDispatcher
 import server.core.OnlinePlayerRegistry
 import server.messaging.format.MessageFormatFinder
 import server.tasks.ServerTaskDispatcher
