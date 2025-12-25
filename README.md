@@ -111,9 +111,10 @@ See `DevTools.md` for details.
 ```
 .
 ├── src/main/kotlin/
+│   ├── annotation/             # Custom annotations
 │   ├── api/                    # REST API endpoints
-│   │   ├── routes/             # API route handlers
-│   │   └── models/             # API request/response models
+│   │   ├── models/             # API request/response models
+│   │   └── routes/             # API routes
 │   ├── context/                # States model (server, player) and tracker
 │   ├── core/                   # Core game logic (domain repository and service)
 │   │   ├── data/               # Global game data, game definitions, and parser
@@ -121,15 +122,17 @@ See `DevTools.md` for details.
 │   ├── data/                   # Database implementation
 │   │   └── collection/         # Database collection models
 │   ├── devtools/               # Developer toolkits
-│   │   └── cmd/                # Server command system
+│   │   └── command/            # Server command system
+│   │       ├── core/           # Core implementation
 │   │       └── impl/           # Command implementation
 │   ├── security                # Security functionality
 │   │   └── validation/         # Validation system
 │   ├── server/                 # Game servers and implementation
-│   │   ├── core/               # Core server definitions
+│   │   ├── core/               # Core server components
 │   │   ├── handler/            # Message handlers
-│   │   ├── messaging/          # Message format definitions
-│   │   ├── protocol/           # Protocol and codec definitions
+│   │   ├── messaging/          # Server messaging components
+│   │   │   ├── codec/          # Message codec components
+│   │   │   └── format/         # Message format definitions
 │   │   └── tasks/              # Server task system
 │   │       └── impl/           # Server task implementation
 │   ├── user/                   # User management
