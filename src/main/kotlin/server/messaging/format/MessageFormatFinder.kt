@@ -18,7 +18,6 @@ class MessageFormatFinder {
     fun detectMessageFormat(data: ByteArray): List<MessageFormat<*>> {
         lateinit var default: MessageFormat<*>
         val matched = mutableListOf<MessageFormat<*>>()
-        val peek = data.take(20)
 
         for (format in formats) {
             if (format.codec.name == "DefaultCodec") default = format
@@ -28,7 +27,10 @@ class MessageFormatFinder {
                     matched.add(format)
                 }
             } catch (e: Exception) {
-                Logger.verbose { "${format.codec.name} couldn't decode for data (peek-20): $peek; with error: $e." }
+                Logger.verbose {
+                    val peek = data.copyOfRange(0, minOf(20, data.size))
+                    "${format.codec.name} verify failed; peek=$peek; $e"
+                }
             }
         }
 
