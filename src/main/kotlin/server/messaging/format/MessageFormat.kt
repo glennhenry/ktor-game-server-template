@@ -7,6 +7,9 @@ import server.messaging.codec.SocketCodec
  * Describes a socket message format, separating wire-level data from the
  * higher-level message payload.
  *
+ * It acts as a bridge between codec's output from raw bytes
+ * with the [messageFactory] which transform it into high-level [SocketMessage].
+ *
  * @param Raw The raw message data type produced by the codec (wire representation).
  * @param Payload The semantic payload type exposed to handlers; this may differ
  *        from [Raw].
