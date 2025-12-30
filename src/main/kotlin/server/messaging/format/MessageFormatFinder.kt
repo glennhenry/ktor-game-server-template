@@ -6,18 +6,18 @@ import utils.logging.Logger
  * Track message format and their codecs.
  */
 class MessageFormatFinder {
-    private val formats = mutableListOf<MessageFormat<*>>()
+    private val formats = mutableListOf<MessageFormat<*, *>>()
 
-    fun <T> register(format: MessageFormat<T>) {
+    fun register(format: MessageFormat<*, *>) {
         formats.add(format)
     }
 
     /**
      * Detect the possible [MessageFormat] for raw bytes [data].
      */
-    fun detectMessageFormat(data: ByteArray): List<MessageFormat<*>> {
-        lateinit var default: MessageFormat<*>
-        val matched = mutableListOf<MessageFormat<*>>()
+    fun detectMessageFormat(data: ByteArray): List<MessageFormat<*, *>> {
+        lateinit var default: MessageFormat<*, *>
+        val matched = mutableListOf<MessageFormat<*, *>>()
 
         for (format in formats) {
             if (format.codec.name == "DefaultCodec") default = format

@@ -55,7 +55,7 @@ class GameServer(private val config: GameServerConfig) : Server {
         )
         // register codec (serializer, deserializer) and message format
         // REPLACE
-        val possibleFormats = listOf<MessageFormat<*>>(
+        val possibleFormats = listOf<MessageFormat<*, *>>(
             MessageFormat(
                 codec = DefaultCodec(),
                 messageFactory = { DefaultMessage(it) }
@@ -188,13 +188,13 @@ class GameServer(private val config: GameServerConfig) : Server {
         // identify what format this message is
         val potentialFormats = serverContext.codecDispatcher.detectMessageFormat(data)
         // keep track the right codec that successfully deserialized the message
-        val matchedFormats = mutableListOf<Pair<String, MessageFormat<Any>>>()
+        val matchedFormats = mutableListOf<Pair<String, MessageFormat<Any, Any>>>()
 
         for (format in potentialFormats) {
             try {
                 @Suppress("UNCHECKED_CAST")
                 // for each potential format, tell its codec to try to decode
-                val deserialized = (format as MessageFormat<Any>).codec.tryDecode(data)
+                val deserialized = (format as MessageFormat<Any, Any>).codec.tryDecode(data)
                 if (deserialized == null) {
                     Logger.debug { "Codec ${format.codec.name} verified successfully but failed to deserialize data, unexpected format mismatch occurred in the middle." }
                     continue

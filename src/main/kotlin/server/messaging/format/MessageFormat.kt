@@ -4,13 +4,18 @@ import server.messaging.SocketMessage
 import server.messaging.codec.SocketCodec
 
 /**
- * Represent the format of socket message with the type [T].
+ * Describes a socket message format, separating wire-level data from the
+ * higher-level message payload.
  *
- * @param codec The [SocketCodec] responsible for verifying, decoding, and encoding this message type.
- * @param messageFactory The factory to instantiate a [SocketMessage] instance of type [T].
- * @param T The message data type handled by this instance.
+ * @param Raw The raw message data type produced by the codec (wire representation).
+ * @param Payload The semantic payload type exposed to handlers; this may differ
+ *        from [Raw].
+ * @param codec The [SocketCodec] responsible for verifying, decoding, and encoding
+ *        the raw message data.
+ * @param messageFactory A factory that transforms the decoded [Raw] data into a
+ *        [server.messaging.SocketMessage] carrying a [Payload].
  */
-data class MessageFormat<T>(
-    val codec: SocketCodec<T>,
-    val messageFactory: (T) -> SocketMessage<T>
+data class MessageFormat<Raw, Payload>(
+    val codec: SocketCodec<Raw>,
+    val messageFactory: (Raw) -> SocketMessage<Payload>
 )
