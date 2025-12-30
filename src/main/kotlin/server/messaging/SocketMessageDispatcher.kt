@@ -34,7 +34,7 @@ class SocketMessageDispatcher {
         val byType = handlersByType[type]
         val selected = when {
             !byType.isNullOrEmpty() -> byType         // find by registered type (quick match)
-            else -> handlers.filter { it.match(msg) } // find by match method (slower)
+            else -> handlers.filter { it.shouldHandle(msg) } // find by match method (slower)
         }.ifEmpty { listOf(default) }                 // default handler fallback
 
         logDispatchment(msg, selected)

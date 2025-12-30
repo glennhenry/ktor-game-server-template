@@ -14,9 +14,9 @@ import server.messaging.SocketMessage
  * [HandlerContext]`<T>` whose payload type matches the handler's expectation.
  *
  * Handler matching behavior:
- * - The default [match] implementation routes messages based on their
+ * - The default [shouldHandle] implementation routes messages based on their
  *   [SocketMessage.type].
- * - Handlers should override [match] only when type-based matching is insufficient.
+ * - Handlers should override [shouldHandle] only when type-based matching is insufficient.
  */
 interface SocketMessageHandler<T> {
     val name: String
@@ -27,11 +27,12 @@ interface SocketMessageHandler<T> {
     val messageType: String
 
     /**
-     * Whether the handle should handle this socket message.
+     * Whether the handler should handle this socket message.
+     *
      * Default implementation matches defined [messageType]
      * with the type of received socket message.
      */
-    fun match(message: SocketMessage<*>): Boolean {
+    fun shouldHandle(message: SocketMessage<*>): Boolean {
         return message.type() == messageType
     }
 

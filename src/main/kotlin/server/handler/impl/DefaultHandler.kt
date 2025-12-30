@@ -16,7 +16,7 @@ class DefaultHandler : SocketMessageHandler<String> {
     override val name: String = "DefaultHandler"
     override val messageType: String = "Default"
 
-    override fun match(message: SocketMessage<*>): Boolean {
+    override fun shouldHandle(message: SocketMessage<*>): Boolean {
         return true
     }
 
