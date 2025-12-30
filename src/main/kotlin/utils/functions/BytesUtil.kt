@@ -10,6 +10,15 @@ fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
 
 fun ByteArray.safeAsciiString(): String {
     return this.map {
-        if (it in 32..126) it.toInt().toChar() else '.'
+        if (it in 32..126) it.toInt().toChar() else '�'
     }.joinToString("")
+}
+
+fun ByteArray.hexAsciiString(): String {
+    return this.joinToString("") {
+        if (it in 32..126)
+            it.toInt().toChar().toString()
+        else
+            "[0x%02X]".format(it)
+    }
 }

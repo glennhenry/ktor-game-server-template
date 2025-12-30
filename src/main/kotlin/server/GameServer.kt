@@ -18,6 +18,7 @@ import server.messaging.format.DefaultMessage
 import server.messaging.format.MessageFormat
 import server.messaging.codec.DefaultCodec
 import server.tasks.TaskName
+import utils.functions.hexAsciiString
 import utils.functions.safeAsciiString
 import utils.logging.Logger
 import utils.logging.Logger.LOG_INDENT_PREFIX
@@ -179,7 +180,8 @@ class GameServer(private val config: GameServerConfig) : Server {
                 appendLine("=====> [SOCKET RECEIVE]")
                 appendLine("$LOG_INDENT_PREFIX playerId  : ${connection.playerId}")
                 appendLine("$LOG_INDENT_PREFIX bytes     : ${data.size}")
-                append("$LOG_INDENT_PREFIX raw       : ${data.safeAsciiString()}")
+                appendLine("$LOG_INDENT_PREFIX raw       : ${data.safeAsciiString()}")
+                append("$LOG_INDENT_PREFIX raw (hex) : ${data.hexAsciiString()}")
             }
         }
 
