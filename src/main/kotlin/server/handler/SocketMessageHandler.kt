@@ -9,10 +9,13 @@ import server.messaging.format.MessageFormat
  * Template for a socket message handler.
  *
  * Each handler is expected to:
- * - Declare the message type it handles via [messageType]
- * - Specify the expected payload type through its generic parameter `T`.
- *   The payload type typically corresponds to the [SocketMessage] implementation
- *   and aligns with the associated [SocketCodec] and [MessageFormat].
+ * - Declare the message type it handles via [messageType].
+ * - Specify the expected high-level message type through its generic parameter `T`.
+ *   Typically, `T` corresponds to a specific [SocketMessage] implementation produced
+ *   by a [MessageFormat] and its associated [SocketCodec].
+ *   For example, a JSON-based handler might declare `T` as `JSONPayload`, which
+ *   wraps a `Map<String, Any>` and provides helper methods, while implementing
+ *   `SocketMessage<Map<String, Any>>`.
  *
  * Incoming [SocketMessage] instances are routed to handlers by the dispatcher
  * based on the message's [SocketMessage.type]. Handlers receive a
