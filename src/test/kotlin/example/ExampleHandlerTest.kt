@@ -91,14 +91,15 @@ class ExampleHandlerTest {
 /**
  * Example of handler that handles ExampleMessage<String>
  */
-class ExampleHandler(private val serverContext: ServerContext) : SocketMessageHandler<String> {
+class ExampleHandler(private val serverContext: ServerContext) : SocketMessageHandler<ExampleMessage> {
     override val name: String = "ExampleHandler"
     override val messageType: String = ""
+    override val expectedMessageClass: Class<out SocketMessage> = ExampleMessage::class.java
 
     /**
      * `with(ctx)` gives developer QoL to access `connection` and `message` simpler.
      */
-    override suspend fun handle(ctx: HandlerContext<String>) = with(ctx) {
+    override suspend fun handle(ctx: HandlerContext<ExampleMessage>) = with(ctx) {
         // example rejection
         if (message.payload.contains("|")) {
             val messageToSend = "RESPONSE.EX.FAIL"
@@ -126,7 +127,7 @@ class ExampleHandler(private val serverContext: ServerContext) : SocketMessageHa
  * - Second word is message type.
  * - The rest are payload.
  */
-class ExampleMessage(override val payload: String) : SocketMessage<String> {
+class ExampleMessage(val payload: String) : SocketMessage {
     override fun type(): String = "EX"
     override fun isValid(): Boolean = true
     override fun isEmpty(): Boolean = false

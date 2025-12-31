@@ -7,15 +7,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.StandardTestDispatcher
 import server.core.network.TestConnection
 import server.handler.DefaultHandlerContext
+import server.handler.HandlerContext
 import server.messaging.SocketMessage
 
 /**
  * Utility to build state to test socket message handlers.
  */
-data class HandlerTestState<T : Any>(
+data class HandlerTestState<T : SocketMessage>(
     val playerId: String = "testPlayerId123",
     val playerName: String = "TestPlayerABC",
-    val message: SocketMessage<T>,
+    val message: T,
     val account: PlayerAccount = PlayerAccount.fake(playerId, playerName),
     val services: PlayerServices,
     val connectionScope: CoroutineScope = CoroutineScope(StandardTestDispatcher())
@@ -34,7 +35,7 @@ data class HandlerTestState<T : Any>(
         contextTracker.fakeContext(it)
     }
 
-    val handlerContext = DefaultHandlerContext(
+    val handlerContext: HandlerContext<T> = DefaultHandlerContext(
         playerId = playerId,
         message = message,
         connection = connection
