@@ -10,6 +10,7 @@ import server.tasks.TaskScheduler
 import server.tasks.ServerTaskDispatcher
 import server.tasks.TaskConfig
 import server.tasks.TaskName
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -24,6 +25,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * Runs on real timer with runBlocking.
  */
+//@Ignore("slow, real-time timer")
 class TaskSchedulerTest {
     private val PID = "playerId123"
     private val NAME = "PlayerABC"
