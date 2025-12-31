@@ -1,5 +1,6 @@
 package server.handler
 
+import annotation.RevisitLater
 import server.messaging.SocketMessage
 
 /**
@@ -17,6 +18,9 @@ import server.messaging.SocketMessage
  * @property message Representation of decoded socket message.
  * @param T Type of [SocketMessage.payload] which the handler operates on.
  */
+@RevisitLater("We may want to enforce type safety on T, so socket dispatchment" +
+        "rely on shouldHandle() and runtime validation of declared payload type" +
+        "and actual received payload type")
 interface HandlerContext<T> {
     val playerId: String
     val message: SocketMessage<T>
