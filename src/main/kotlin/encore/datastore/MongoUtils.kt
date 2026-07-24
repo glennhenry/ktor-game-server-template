@@ -1,9 +1,9 @@
 package encore.datastore
 
+import bootstrap.CodecRegistry
 import com.mongodb.client.result.DeleteResult
-import com.mongodb.client.result.InsertManyResult
-import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
+import org.bson.Document
 import org.bson.conversions.Bson
 
 /**
@@ -12,10 +12,22 @@ import org.bson.conversions.Bson
 class DocumentNotFoundException(message: String) : RuntimeException(message)
 
 /**
- * Thrown when a MongoDB update operation fails to update
+ * Thrown when a MongoDB update operation does not update
  * the specified document (i.e., when `modifiedCount < 1`).
  */
 class DocumentNotUpdatedException(message: String) : RuntimeException(message)
+
+/**
+ * Thrown when a MongoDB delete operation does not delete
+ * any document (i.e., when `deletedCount < 1`).
+ */
+class DocumentNotDeletedException(message: String) : RuntimeException(message)
+
+/**
+ * Thrown when a MongoDB write operation (e.g., insert, update, delete)
+ * is not acknowledged.
+ */
+class MongoNotAcknowledged(message: String) : RuntimeException(message)
 
 /**
  * Executes [block] and wraps its result in a [Result].
@@ -38,8 +50,38 @@ inline fun <T> runMongoCatching(
 }
 
 /**
- * Check whether update operation were matched and modified; and throw an error
- * if it's not.
+ * Throw an error if the update operation does not match any document.
+ *
+ * @param context Information about the update operation and will be included in the exception.
+ * @param filter Optional lambda containing the Mongo `Filters` which will be included in the exception.
+ * @throws MongoNotAcknowledged if the operation is not acknowledged.
+ * @throws DocumentNotFoundException if `matchedCount` is less than 1
+ */
+fun UpdateResult.throwIfNothingMatched(
+    context: String = "",
+    filter: (() -> Bson?)? = null,
+) {
+    if (!wasAcknowledged()) throw MongoNotAcknowledged("MongoDB update not acknowledged: $context")
+
+    if (matchedCount < 1) {
+        val filterStr = filter?.invoke()?.toBsonDocument(Document::class.java, CodecRegistry)?.toJson()
+        throw DocumentNotFoundException(
+            "No document matched: $context\n" +
+                    (filterStr?.let { "     filter=$it" } ?: "")
+        )
+    }
+}
+
+/**
+ * Throw an error if the update operation does not match any document or modify any.
+ *
+ * **Note**: A document will not be considered as modified if the document
+ * is already in the state requested by the operation. For example,
+ * a document having value `x = 1` with a request updating `x` to 1;
+ * the document will not be updated and **this function will throw**.
+ *
+ * Use this only if an update operation must always change a document state.
+ * Otherwise, [throwIfNothingMatched] may be suitable alternative.
  *
  * @param context Information about the update operation and will be included in the exception.
  * @param filter Optional lambda containing the Mongo `Filters` which will be included in the exception.
@@ -47,24 +89,26 @@ inline fun <T> runMongoCatching(
  * @throws DocumentNotFoundException if `matchedCount` is less than 1
  * @throws DocumentNotUpdatedException if `modifiedCount` is less than 1
  */
-fun UpdateResult.throwIfNotModified(
+fun UpdateResult.throwIfNothingModified(
     context: String = "",
     filter: (() -> Bson?)? = null,
     update: (() -> Bson?)? = null,
 ) {
-    if (this.upsertedId == null && matchedCount < 1) {
-        val filterStr = filter?.invoke()?.toBsonDocument()?.toJson()
+    if (!wasAcknowledged()) throw MongoNotAcknowledged("MongoDB update not acknowledged: $context")
+
+    if (matchedCount < 1) {
+        val filterStr = filter?.invoke()?.toBsonDocument(Document::class.java, CodecRegistry)?.toJson()
         throw DocumentNotFoundException(
             "No document matched: $context\n" +
                     (filterStr?.let { "     filter=$it" } ?: "")
         )
     }
 
-    if (this.upsertedId == null && modifiedCount < 1) {
-        val filterStr = filter?.invoke()?.toBsonDocument()?.toJson()
-        val updateStr = update?.invoke()?.toBsonDocument()?.toJson()
+    if (modifiedCount < 1) {
+        val filterStr = filter?.invoke()?.toBsonDocument(Document::class.java, CodecRegistry)?.toJson()
+        val updateStr = update?.invoke()?.toBsonDocument(Document::class.java, CodecRegistry)?.toJson()
         throw DocumentNotUpdatedException(
-            "Document matched but not updated: $context\n" +
+            "Document matched but not modified: $context\n" +
                     (filterStr?.let { "     filter=$it" } ?: "") +
                     (updateStr?.let { "\n     update=$it" } ?: "")
         )
@@ -72,79 +116,24 @@ fun UpdateResult.throwIfNotModified(
 }
 
 /**
- * Ensure this insert one result is acknowledged, otherwise
- * throw an [IllegalStateException].
+ * Throw an error if the delete operation does not delete anything.
+ * Use this only if a delete operation is expected to delete something.
  *
- * Can be chained with [InsertOneResult.and].
+ * @param context Information about the update operation and will be included in the exception.
+ * @param filter Optional lambda containing the Mongo `Filters` which will be included in the exception.
+ * @throws DocumentNotDeletedException if `deletedCount` is less than 1
  */
-fun ensureAck(res: InsertOneResult): InsertOneResult {
-    if (!res.wasAcknowledged()) {
-        error("MongoDB insert one not acknowledged: $res")
-    }
-    return res
-}
+fun DeleteResult.throwIfNothingDeleted(
+    context: String = "",
+    filter: (() -> Bson?)? = null,
+) {
+    if (!wasAcknowledged()) throw MongoNotAcknowledged("MongoDB delete not acknowledged: $context")
 
-/**
- * Ensure this insert one result and [other] is acknowledged,
- * otherwise throw an IllegalStateException.
- */
-fun InsertOneResult.and(other: InsertOneResult): InsertOneResult {
-    if (!this.wasAcknowledged() || !other.wasAcknowledged()) {
-        error("MongoDB insert one not acknowledged: \n" +
-                "this=$this \n" +
-                "other=$other")
+    if (deletedCount < 1) {
+        val filterStr = filter?.invoke()?.toBsonDocument(Document::class.java, CodecRegistry)?.toJson()
+        throw DocumentNotDeletedException(
+            "No document deleted: $context\n" +
+                    (filterStr?.let { "     filter=$it" } ?: "")
+        )
     }
-    return other
-}
-
-/**
- * Ensure this insert many result is acknowledged, otherwise
- * throw an [IllegalStateException].
- *
- * Can be chained with [InsertManyResult.and].
- */
-fun ensureAck(res: InsertManyResult): InsertManyResult {
-    if (!res.wasAcknowledged()) {
-        error("MongoDB insert many not acknowledged: $res")
-    }
-    return res
-}
-
-/**
- * Ensure this insert many result and [other] is acknowledged,
- * otherwise throw an [IllegalStateException].
- */
-fun InsertManyResult.and(other: InsertManyResult): InsertManyResult {
-    if (!this.wasAcknowledged() || !other.wasAcknowledged()) {
-        error("MongoDB insert many not acknowledged: \n" +
-                "this=$this \n" +
-                "other=$other")
-    }
-    return other
-}
-
-/**
- * Ensure this delete result is acknowledged, otherwise
- * throw an [IllegalStateException].
- *
- * Can be chained with [DeleteResult.and].
- */
-fun ensureAck(res: DeleteResult): DeleteResult {
-    if (!res.wasAcknowledged()) {
-        error("MongoDB delete not acknowledged: $res")
-    }
-    return res
-}
-
-/**
- * Ensure this delete result and [other] is acknowledged,
- * otherwise throw an [IllegalStateException].
- */
-fun DeleteResult.and(other: DeleteResult): DeleteResult {
-    if (!this.wasAcknowledged() || !other.wasAcknowledged()) {
-        error("MongoDB delete not acknowledged: \n" +
-                "this=$this \n" +
-                "other=$other")
-    }
-    return other
 }

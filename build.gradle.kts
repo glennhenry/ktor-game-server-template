@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "dev.encore"
-version = "1.0.15"
+version = "1.0.16"
 
 application {
     mainClass = "ApplicationKt"
@@ -28,22 +28,22 @@ tasks.withType<ShadowJar> {
     }
 }
 
-val copyGameAssets by tasks.registering(Copy::class) {
+val copyGameAssets = tasks.register<Copy>("copyGameAssets") {
     from("assets")
     into("deploy/assets")
 }
 
-val copyBackstageAssets by tasks.registering(Copy::class) {
+val copyBackstageAssets = tasks.register<Copy>("copyBackstageAssets") {
     from("backstage")
     into("deploy/backstage")
 }
 
-val copyVenue by tasks.registering(Copy::class) {
+val copyVenue = tasks.register<Copy>("copyVenue") {
     from("venue.xml")
     into("deploy")
 }
 
-val copyVenueSecret by tasks.registering(Copy::class) {
+val copyVenueSecret = tasks.register<Copy>("copyVenueSecret") {
     from("venue.secret.xml")
     into("deploy")
 }

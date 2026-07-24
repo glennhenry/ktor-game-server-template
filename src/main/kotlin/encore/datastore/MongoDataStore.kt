@@ -117,19 +117,20 @@ class MongoDataStore(db: MongoDatabase, collectionName: MongoCollectionName) : D
         playerServerObjects: PlayerServerObjects
     ): Result<Unit> {
         return runMongoCatching {
-            ensureAck(accounts.insertOne(account))
-                .and(this.playerObjects.insertOne(playerObjects))
-                .and(this.playerServerObjects.insertOne(playerServerObjects))
-                .asUnit()
+            accounts.insertOne(account)
+            this.playerObjects.insertOne(playerObjects)
+            this.playerServerObjects.insertOne(playerServerObjects).asUnit()
         }
     }
 
     override suspend fun delete(playerId: PlayerId): Result<Unit> {
         return runMongoCatching {
-            ensureAck(accounts.deleteOne(Filters.eq(FieldPlayerId, playerId)))
-                .and(playerObjects.deleteOne(Filters.eq(FieldPlayerId, playerId)))
-                .and(playerServerObjects.deleteOne(Filters.eq(FieldPlayerId, playerId)))
-                .asUnit()
+            accounts.deleteOne(Filters.eq(FieldPlayerId, playerId))
+                .throwIfNothingDeleted("accounts")
+            playerObjects.deleteOne(Filters.eq(FieldPlayerId, playerId))
+                .throwIfNothingDeleted("playerObjects")
+            playerServerObjects.deleteOne(Filters.eq(FieldPlayerId, playerId))
+                .throwIfNothingDeleted("playerServerObjects")
         }
     }
 

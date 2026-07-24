@@ -77,7 +77,7 @@ class MongoAccountRepository(val accountCollection: MongoCollection<PlayerAccoun
             val filter = Filters.eq(FieldPlayerId, playerId)
             accountCollection
                 .replaceOne(filter, account)
-                .throwIfNotModified("updatePlayerAccount not updated for $playerId", { filter }, null)
+                .throwIfNothingMatched("updatePlayerAccount not updated for $playerId", { filter })
         }
     }
 
@@ -90,7 +90,7 @@ class MongoAccountRepository(val accountCollection: MongoCollection<PlayerAccoun
             val update = Updates.set(FieldProfile, profile)
             accountCollection
                 .updateOne(filter, update)
-                .throwIfNotModified("updateProfile not updated for $playerId", { filter }, { update })
+                .throwIfNothingMatched("updateProfile not updated for $playerId", { filter })
         }
     }
 
@@ -103,7 +103,7 @@ class MongoAccountRepository(val accountCollection: MongoCollection<PlayerAccoun
             val update = Updates.set(FieldProfileLastActive, lastActivity)
             accountCollection
                 .updateOne(filter, update)
-                .throwIfNotModified("updateLastActivity not updated for $playerId", { filter }, { update })
+                .throwIfNothingMatched("updateLastActivity not updated for $playerId", { filter })
         }
     }
 

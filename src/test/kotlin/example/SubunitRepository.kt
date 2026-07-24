@@ -7,7 +7,7 @@ import encore.datastore.DocumentNotFoundException
 import encore.datastore.FieldPlayerId
 import encore.datastore.collection.PlayerId
 import encore.datastore.runMongoCatching
-import encore.datastore.throwIfNotModified
+import encore.datastore.throwIfNothingMatched
 import encore.fancam.Fancam
 import encore.subunit.Subunit
 import encore.subunit.helper.failHandleGet
@@ -153,7 +153,7 @@ interface PlayerRepository {
  * any errors to be caught and wrapped into the `Result` type.
  *
  * Typically, the result of update, replace, and delete operations are
- * checked to ensure a modification was done. Helper such as [throwIfNotModified]
+ * checked to ensure a modification was done. Helper such as [throwIfNothingModified]
  * can be used easily check the result and throw an error.
  *
  * ### Exception Logging
@@ -202,7 +202,7 @@ class MongoPlayerRepository(val data: MongoCollection<PlayerModel>) : PlayerRepo
             val update = Updates.set("health", newHealth)
 
             data.updateOne(filter, update)
-                .throwIfNotModified(playerId)
+                .throwIfNothingMatched(playerId, { filter })
         }
     }
 
@@ -212,7 +212,7 @@ class MongoPlayerRepository(val data: MongoCollection<PlayerModel>) : PlayerRepo
             val update = Updates.set("items", newItems)
 
             data.updateOne(filter, update)
-                .throwIfNotModified(playerId)
+                .throwIfNothingMatched(playerId, { filter })
         }
     }
 }

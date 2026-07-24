@@ -68,7 +68,7 @@ suspend fun Application.configureApplication() {
     val security = DefaultSecurity(bannedAddresses, TimeCenter.source)
 
     // setup the framework
-    val (mongoc, db) = installEncore(
+    val db = installEncore(
         module = SerializersModule { },
         security = security
     )
@@ -82,7 +82,6 @@ suspend fun Application.configureApplication() {
         appScope = appScope,
         serverSubunitScope = serverSubunitScope,
         collectionName = MongoCollectionName,
-        mongoClient = mongoc,
         mongoDatabase = db
     )
 

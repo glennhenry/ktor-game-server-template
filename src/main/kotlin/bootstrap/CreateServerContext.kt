@@ -1,7 +1,5 @@
 package bootstrap
 
-import MongoCollectionName
-import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import encore.account.AccountSubunit
 import encore.account.MongoAccountRepository
@@ -20,7 +18,6 @@ import encore.presence.PlayerPresenceSubunit
 import encore.session.SessionSubunit
 import encore.subunit.scope.ServerScope
 import encore.time.TimeCenter
-import encore.venue.Venue
 import encore.websocket.WebSocketManager
 import game.RealContextFactory
 import kotlinx.coroutines.CoroutineScope
@@ -32,16 +29,15 @@ suspend fun createServerContext(
     appScope: CoroutineScope,
     serverSubunitScope: ServerScope,
     collectionName: MongoCollectionName,
-    mongoClient: MongoClient,
     mongoDatabase: MongoDatabase
 ): ServerContext {
     // setup ServerContext
     val dataStore = MongoDataStore(
-        db = mongoClient.getDatabase(Venue.encore.database.dbName),
-        collectionName = MongoCollectionName
+        db = mongoDatabase,
+        collectionName = collectionName
     ).also { it.awaitInit() }
     val accountRepository = MongoAccountRepository(
-        accountCollection = mongoDatabase.getCollection(MongoCollectionName.playerAccount)
+        accountCollection = mongoDatabase.getCollection(collectionName.playerAccount)
     )
     // RealContextFactory must be updated overtime to update PlayerSubunits construction
     val contextRegistry = ContextRegistry(
@@ -71,7 +67,7 @@ suspend fun createServerContext(
     )
 
     // debut all subunits
-    subunits.debut(ServerScope)
+    subunits.debut(serverSubunitScope)
 
     val serverContext = ServerContext(
         dataStore = dataStore,
