@@ -3,8 +3,8 @@ package encore.account
 import encore.account.model.Credentials
 import encore.account.model.Profile
 import encore.auth.AuthSubunit
-import encore.datastore.collection.PlayerAccount
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerAccount
+import game.mongo.collection.PlayerId
 import encore.fancam.Fancam
 import encore.fancam.Tags
 import encore.subunit.Subunit
@@ -25,6 +25,22 @@ import encore.utils.types.toReport
  * @property accountRepository [AccountRepository] implementation.
  */
 class AccountSubunit(private val accountRepository: AccountRepository) : Subunit<ServerScope> {
+    /**
+     * Returns an [Outcome] containing [PlayerAccount] associated with [playerId].
+     * - [Outcome.Fail] when there is internal repository error.
+     * - [Outcome.Ok] with `null` if account does not exist.
+     * - [Outcome.Ok] with the account otherwise.
+     */
+    suspend fun getAccountByPlayerId(playerId: PlayerId): Outcome<PlayerAccount?> {
+        return accountRepository.getAccountByPlayerId(playerId)
+            .onFailure {
+                Fancam.error(it, Tags.Account) {
+                    "getAccountByPlayerId failed: repository scandal for '$playerId'"
+                }
+            }
+            .toOutcome { account -> return Outcome.Ok(account) }
+    }
+
     /**
      * Returns an [Outcome] containing [PlayerAccount] associated with [username].
      * - [Outcome.Fail] when there is internal repository error.

@@ -1,7 +1,7 @@
 package encore.account
 
-import encore.datastore.collection.PlayerAccount
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerAccount
+import game.mongo.collection.PlayerId
 import encore.account.model.Credentials
 import encore.account.model.Profile
 
@@ -20,6 +20,17 @@ import encore.account.model.Profile
  * internal failure such as DB errors and not business outcome.
  */
 interface AccountRepository {
+    /**
+     * Returns [PlayerAccount] associated with the given [playerId], if it exists.
+     *
+     * Returns [Result.success] with:
+     * - the [PlayerAccount] if found
+     * - `null` if no account exists for the given [playerId]
+     *
+     * Returns [Result.failure] if an error occurs while retrieving the data.
+     */
+    suspend fun getAccountByPlayerId(playerId: PlayerId): Result<PlayerAccount?>
+
     /**
      * Returns [PlayerAccount] associated with the given [username], if it exists.
      *

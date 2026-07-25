@@ -1,10 +1,10 @@
 package encoreTest.account
 
-import TestMongoCollectionName
+import TestMongoCollections
 import encore.account.MongoAccountRepository
 import encore.account.model.Credentials
 import encore.account.model.Profile
-import encore.datastore.collection.PlayerAccount
+import game.mongo.collection.PlayerAccount
 import encore.utils.identifier.Ids
 import encore.utils.hash
 import initMongo
@@ -21,9 +21,9 @@ class MongoAccountRepositoryTest {
     @Test
     fun `test all`() = runTest {
         val mongoDb = initMongo()
-        val collection = mongoDb.getCollection<PlayerAccount>(TestMongoCollectionName.playerAccount)
+        val collection = mongoDb.getCollection<PlayerAccount>(TestMongoCollections.playerAccount)
         collection.drop()
-        mongoDb.createCollection(TestMongoCollectionName.playerAccount)
+        mongoDb.createCollection(TestMongoCollections.playerAccount)
 
         val repo = MongoAccountRepository(collection)
 
