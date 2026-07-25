@@ -4,7 +4,7 @@ import com.mongodb.MongoWriteException
 import com.toxicbakery.bcrypt.Bcrypt
 import encore.EncoreConfig
 import encore.account.AccountSubunit
-import encore.account.PlayerCreationSubunit
+import encore.creation.PlayerCreationSubunit
 import encore.fancam.Fancam
 import encore.fancam.Tags
 import encore.session.SessionSubunit
@@ -48,7 +48,7 @@ class AuthSubunit(
      */
     suspend fun register(username: String, password: String, email: String): Outcome<UserSession?> {
         try {
-            val playerId = creationSubunit.createPlayer(username, password, email)
+            val playerId = creationSubunit.createPlayer(username = username, password = password, email = email)
             Fancam.trace(Tags.Auth) { "Registered '$username' successfully" }
             val session = sessionSubunit.create(playerId)
             return Outcome.Ok(session)

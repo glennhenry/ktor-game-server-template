@@ -1,7 +1,7 @@
 package encore.acts
 
 import encore.acts.choreo.BasicChoreography
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerId
 import encore.network.transport.Connection
 
 /**

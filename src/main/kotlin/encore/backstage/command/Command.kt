@@ -3,7 +3,7 @@ package encore.backstage.command
 import encore.backstage.command.types.ArgumentCollection
 import encore.backstage.command.types.CommandResult
 import encore.backstage.command.types.CommandVariant
-import encore.context.ServerContext
+import game.context.ServerContext
 
 /**
  * Represents a server command that can be invoked to perform a specific action in the server.

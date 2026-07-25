@@ -12,6 +12,7 @@ object Tags {
     const val Backstage = "backstage"
     const val Command = "command"
     const val Datastore = "datastore"
+    const val Extra = "extra"
     const val Reference = "reference"
     const val Fancam = "fancam"
     const val Fanchant = "fanchant"

@@ -61,12 +61,11 @@ import kotlin.time.Duration.Companion.seconds
  * @param security Configure API security with [SecurityGuard].
  * @return [MongoDatabase] for application usage.
  */
-@OptIn(ExperimentalSerializationApi::class)
 suspend fun Application.installEncore(
     module: SerializersModule = SerializersModule { },
     security: SecurityGuard
 ): MongoDatabase {
-    configureSerialization()
+    configureSerialization(module)
     configureFancam()
     configureCors()
     configureStatusPages()

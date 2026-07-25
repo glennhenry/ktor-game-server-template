@@ -7,7 +7,7 @@ import encore.backstage.command.CommandDispatcher
 import encore.backstage.command.types.CommandRequest
 import encore.backstage.command.types.CommandResult
 import encore.backstage.command.types.CommandVariant
-import encore.context.ServerContext
+import game.context.ServerContext
 import encore.backstage.command.types.variantsAsString
 import encore.fancam.events.Level
 import testUtils.TestFancam

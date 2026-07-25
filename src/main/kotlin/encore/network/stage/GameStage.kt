@@ -1,6 +1,6 @@
 package encore.network.stage
 
-import encore.context.ServerContext
+import game.context.ServerContext
 import encore.fancam.Fancam
 import encore.fancam.INDENT
 import encore.fancam.Tags

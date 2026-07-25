@@ -1,6 +1,6 @@
 package encore.network.lifecycle
 
-import encore.context.PlayerContext
+import game.context.PlayerContext
 
 /**
  * Represent the lifecycle of player connection in the socket server.

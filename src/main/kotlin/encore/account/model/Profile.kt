@@ -1,6 +1,6 @@
 package encore.account.model
 
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerId
 import kotlinx.serialization.Serializable
 
 /**

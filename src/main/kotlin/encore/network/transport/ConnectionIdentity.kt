@@ -1,6 +1,6 @@
 package encore.network.transport
 
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerId
 
 /**
  * Represent the identity information of a [Connection] object.

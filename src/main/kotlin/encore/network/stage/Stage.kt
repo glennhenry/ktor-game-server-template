@@ -1,6 +1,6 @@
 package encore.network.stage
 
-import encore.context.ServerContext
+import game.context.ServerContext
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
  */
 interface Stage {
     /**
-     * Initialize the server with the given coroutine scope and [encore.context.ServerContext].
+     * Initialize the server with the given coroutine scope and [ServerContext].
      */
     suspend fun initialize(scope: CoroutineScope, context: ServerContext)
 

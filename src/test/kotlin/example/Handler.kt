@@ -1,8 +1,8 @@
 package example
 
-import encore.context.PlayerSubunits
-import encore.context.ServerContext
-import encore.datastore.collection.PlayerAccount
+import game.context.PlayerSubunits
+import game.context.ServerContext
+import game.mongo.collection.PlayerAccount
 import encore.network.transport.TestConnection
 import encore.network.handler.HandlerContext
 import encore.network.handler.FanchantHandler

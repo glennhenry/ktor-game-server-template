@@ -1,7 +1,7 @@
 package encoreTest.network.server
 
-import encore.context.ServerContext
-import encore.datastore.collection.PlayerId
+import game.context.ServerContext
+import game.mongo.collection.PlayerId
 import encore.fancam.events.Level
 import encore.network.fanchant.Fanchant
 import encore.network.fanchant.guide.DecodeResult

@@ -1,11 +1,11 @@
 package testUtils
 
 import encore.context.FakeContextFactory
-import encore.context.PlayerContext
-import encore.context.PlayerSubunits
-import encore.context.ServerContext
-import encore.datastore.collection.PlayerAccount
-import encore.datastore.collection.PlayerId
+import game.context.PlayerContext
+import game.context.PlayerSubunits
+import game.context.ServerContext
+import game.mongo.collection.PlayerAccount
+import game.mongo.collection.PlayerId
 import encore.network.fanchant.Fanchant
 import encore.network.handler.HandlerContext
 import encore.network.transport.ConnectionIdentity
