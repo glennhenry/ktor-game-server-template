@@ -160,8 +160,10 @@ description: example
 │   │   ├── auth/                   # Authentication components
 │   │   ├── backstage/              # Developer tooling utilities
 │   │   ├── context/                # Dependency container and player state management
+│   │   ├── creation/               # Player creation mechanism
 │   │   ├── datastore/              # Persistence and database components
 │   │   ├── definition/             # Gameplay rules and data abstractions
+│   │   ├── extra/                  # Player extra data service
 │   │   ├── fancam/                 # Logging system
 │   │   ├── network/                # Server networking components
 │   │   │   ├── fanchant/           # Game message abstractions
@@ -183,10 +185,12 @@ description: example
 │   │   └── EncoreIdentity.kt       # Encore version and flavor metadata
 │   ├── game/                       # Game server implementation source
 │   │   ├── config/                 # User-defined configuration
-│   │   ├── FileRoutes.kt           # Static file serving routes
+│   │   ├── context/                # Context objects definition
+│   │   ├── mongo/                  # Defines mongo collection
+│   │   ├── routes/                 # Defines application routes
 │   │   ├── GameIdentity.kt         # Implementation version and flavor metadata
 │   │   ├── Globals.kt              # Global application constants
-│   │   └── RealContextFactory.kt   # Player state factory
+│   │   └── RealPlayerCreationFactory.kt # Player state factory
 │   └── Application.kt              # Application entry point and wiring
 │
 ├── src/test/kotlin/
