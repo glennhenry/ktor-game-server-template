@@ -1,14 +1,16 @@
 package encore.context
 
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerId
 import encore.network.transport.Connection
+import game.context.PlayerContext
+import game.context.ServerContext
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Manages [PlayerContext] of all connected players.
+ * Manages [game.context.PlayerContext] of all connected players.
  *
  * This class is responsible for:
- * - Creating, registering and storing [PlayerContext].
+ * - Creating, registering and storing [game.context.PlayerContext].
  * - Provide lookup during gameplay.
  *
  * @property factory [ContextFactory] instance used for creating contexts.
@@ -23,10 +25,11 @@ class ContextRegistry(private val factory: ContextFactory) {
      *
      * @param playerId Unique identifier of the player.
      * @param connection [Connection] object.
+     * @param serverContext [game.context.ServerContext] object.
      * @return The newly created context.
      */
-    suspend fun createContext(playerId: PlayerId, connection: Connection): PlayerContext {
-        val context = factory.createContext(playerId, connection)
+    suspend fun createContext(playerId: PlayerId, connection: Connection, serverContext: ServerContext): PlayerContext {
+        val context = factory.playerContext(playerId, connection, serverContext)
         players[playerId] = context
         return context
     }

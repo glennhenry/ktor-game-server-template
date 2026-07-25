@@ -1,7 +1,7 @@
-package encore.context
+package game.context
 
-import encore.datastore.collection.PlayerAccount
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerAccount
+import game.mongo.collection.PlayerId
 import encore.fancam.Fancam
 import encore.network.transport.Connection
 import encore.subunit.Subunit
@@ -19,7 +19,7 @@ import encore.utils.support.className
  *
  * During gameplay, [PlayerContext] is frequently accessed.
  * Typically, right after a player successfully authenticates context instance is created.
- * Context creation is handled by [ContextFactory] and registered in [ContextRegistry].
+ * Context creation is handled by [encore.context.ContextFactory] and registered in [encore.context.ContextRegistry].
  */
 data class PlayerContext(
     val playerId: PlayerId,

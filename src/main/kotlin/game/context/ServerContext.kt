@@ -1,17 +1,20 @@
-package encore.context
+package game.context
 
 import encore.account.AccountRepository
 import encore.account.AccountSubunit
 import encore.account.BlankAccountRepository
-import encore.account.PlayerCreationSubunit
+import encore.creation.PlayerCreationSubunit
 import encore.presence.PlayerPresenceSubunit
 import encore.acts.ActIdStore
 import encore.acts.StageActDirector
 import encore.auth.AuthSubunit
 import encore.backstage.command.CommandDispatcher
+import encore.context.ContextFactory
+import encore.context.ContextRegistry
+import encore.context.FakeContextFactory
 import encore.datastore.BlankDataStore
 import encore.datastore.DataStore
-import encore.datastore.collection.PlayerId
+import game.mongo.collection.PlayerId
 import encore.fancam.Fancam
 import encore.network.lifecycle.PlayerLifecycleHandler
 import encore.session.SessionSubunit
