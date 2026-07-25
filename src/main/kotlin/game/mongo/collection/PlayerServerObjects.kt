@@ -1,6 +1,5 @@
-package encore.datastore.collection
+package game.mongo.collection
 
-import encore.account.model.PlayerMetadata
 import game.Globals
 
 /**
@@ -12,11 +11,11 @@ import game.Globals
  * that is needed by the server but isn't classified as game data.
  *
  * @property playerId Unique identifier of the player.
- * @property metadata Miscellaneous information about the player.
+ * @property extra Miscellaneous information of the player.
  */
 data class PlayerServerObjects(
     val playerId: PlayerId,
-    val metadata: PlayerMetadata = PlayerMetadata()
+    val extra: Map<String, String> = emptyMap(),
 ) {
     /**
      * Template to create player server objects.
@@ -27,15 +26,13 @@ data class PlayerServerObjects(
     companion object {
         fun admin(): PlayerServerObjects {
             return PlayerServerObjects(
-                playerId = Globals.ADMIN_PLAYER_ID,
-                metadata = PlayerMetadata()
+                playerId = Globals.ADMIN_PLAYER_ID
             )
         }
 
         fun newGame(playerId: PlayerId): PlayerServerObjects {
             return PlayerServerObjects(
-                playerId = playerId,
-                metadata = PlayerMetadata()
+                playerId = playerId
             )
         }
     }

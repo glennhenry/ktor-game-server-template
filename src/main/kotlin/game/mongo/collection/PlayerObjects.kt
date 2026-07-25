@@ -1,4 +1,4 @@
-package encore.datastore.collection
+package game.mongo.collection
 
 import game.Globals
 

@@ -1,4 +1,4 @@
-package encore.datastore.collection
+package game.mongo.collection
 
 import encore.acts.ActScope
 import kotlinx.serialization.Serializable
