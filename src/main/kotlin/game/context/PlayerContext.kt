@@ -45,6 +45,7 @@ data class PlayerSubunits(
 ) {
     /**
      * Return all player subunit instances.
+     * **ADD YOUR NEW SUBUNIT HERE TO BE DEBUTED**
      */
     fun all(): Set<Subunit<PlayerScope>> {
         return setOf()

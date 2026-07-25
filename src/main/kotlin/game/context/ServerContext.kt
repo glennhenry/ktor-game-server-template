@@ -14,6 +14,9 @@ import encore.context.ContextRegistry
 import encore.context.FakeContextFactory
 import encore.datastore.BlankDataStore
 import encore.datastore.DataStore
+import encore.extra.InMemoryPlayerExtraRepository
+import encore.extra.PlayerExtraRepository
+import encore.extra.PlayerExtraSubunit
 import game.mongo.collection.PlayerId
 import encore.fancam.Fancam
 import encore.network.lifecycle.PlayerLifecycleHandler
@@ -57,7 +60,9 @@ data class ServerContext(
          * @param parentScope `CoroutineScope` for [SessionSubunit].
          * @param timeSource [TimeSource] for [StageActDirector].
          * @param dataStore Also used to build [PlayerCreationSubunit].
+         * @param playerLifecycleHandler
          * @param accountRepository Used to build [AccountSubunit].
+         * @param extraRepository Used to build [PlayerExtraSubunit].
          * @param contextFactory Required by [ContextRegistry],
          *                       uses [FakeContextFactory] with empty map by default.
          */
@@ -67,11 +72,13 @@ data class ServerContext(
             dataStore: DataStore = BlankDataStore(),
             playerLifecycleHandler: PlayerLifecycleHandler = PlayerLifecycleHandler(true),
             accountRepository: AccountRepository = BlankAccountRepository(),
+            extraRepository: PlayerExtraRepository = InMemoryPlayerExtraRepository(),
             contextFactory: ContextFactory = FakeContextFactory(emptyMap())
         ): ServerContext {
             val account = AccountSubunit(accountRepository)
             val session = SessionSubunit.createForTest(parentScope)
             val creation = PlayerCreationSubunit.createForTest(dataStore)
+            val extra = PlayerExtraSubunit.createForTest(extraRepository)
 
             return ServerContext(
                 dataStore = dataStore,
@@ -84,6 +91,7 @@ data class ServerContext(
                     account = account,
                     auth = AuthSubunit(account, creation, session),
                     creation = creation,
+                    extra = extra,
                     presence = PlayerPresenceSubunit(),
                     session = session
                 )
@@ -121,6 +129,7 @@ fun ServerContext.requirePlayerContext(playerId: PlayerId): PlayerContext {
  * @property account Provides API related to accounts.
  * @property auth Provides authentication functions.
  * @property creation Provides player creation mechanism.
+ * @property extra Provides player extra data service.
  * @property presence Tracks player's presence.
  * @property session Manages session of players.
  */
@@ -128,14 +137,16 @@ data class ServerSubunits(
     val account: AccountSubunit,
     val auth: AuthSubunit,
     val creation: PlayerCreationSubunit,
+    val extra: PlayerExtraSubunit,
     val presence: PlayerPresenceSubunit,
     val session: SessionSubunit,
 ) {
     /**
      * Return all server subunit instances.
+     * **ADD YOUR NEW SUBUNIT HERE TO BE DEBUTED**
      */
     fun all(): Set<Subunit<ServerScope>> {
-        return setOf(account, auth, creation, presence, session)
+        return setOf(account, auth, creation, extra, presence, session)
     }
 
     /**
