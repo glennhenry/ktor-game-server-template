@@ -10,7 +10,7 @@ import game.mongo.collection.PlayerId
 import game.mongo.collection.PlayerServerObjects
 import kotlinx.coroutines.flow.firstOrNull
 
-class MongoPlayerMetadataRepository(
+class MongoPlayerExtraRepository(
     private val psCollection: MongoCollection<PlayerServerObjects>
 ) : PlayerExtraRepository {
     override suspend fun getExtra(playerId: PlayerId, key: String): Result<String?> {

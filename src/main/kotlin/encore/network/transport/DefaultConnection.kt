@@ -67,6 +67,7 @@ class DefaultConnection(
             if (logOutput) {
                 onSend(this)
             }
+        } catch (_: ClosedWriteChannelException) {
         } catch (e: Exception) {
             Fancam.error(e, Tags.Socket) { "Failed to write to $this" }
             throw e

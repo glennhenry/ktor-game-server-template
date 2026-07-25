@@ -40,6 +40,7 @@ class MongoAccountRepositoryTest {
 
         collection.insertMany(List(20) { account() } + account)
 
+        assertEquals(account.playerId, repo.getAccountByPlayerId(id).getOrThrow().playerId)
         assertEquals(account.playerId, repo.getAccountByUsername(name).getOrThrow().playerId)
         assertEquals(id, repo.getPlayerIdByUsername(name).getOrThrow())
         assertEquals(Credentials(id, account.hashedPassword), repo.getCredentials(name).getOrThrow())

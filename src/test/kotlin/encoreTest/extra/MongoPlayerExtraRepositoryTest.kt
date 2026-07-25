@@ -1,7 +1,7 @@
 package encoreTest.extra
 
 import TestMongoCollections
-import encore.extra.MongoPlayerMetadataRepository
+import encore.extra.MongoPlayerExtraRepository
 import game.mongo.collection.PlayerServerObjects
 import initMongo
 import kotlinx.coroutines.test.runTest
@@ -23,7 +23,7 @@ class MongoPlayerExtraRepositoryTest {
             )
         )
 
-        val repo = MongoPlayerMetadataRepository(collection)
+        val repo = MongoPlayerExtraRepository(collection)
 
         // 1. getExtra
         assertEquals("123", repo.getExtra("abc", key = "a").getOrNull())

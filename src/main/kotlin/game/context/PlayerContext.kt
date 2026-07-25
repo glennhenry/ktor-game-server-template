@@ -51,7 +51,6 @@ data class PlayerSubunits(
         return setOf()
     }
 
-
     /**
      * Debut every player subunit instances with [scope].
      */
