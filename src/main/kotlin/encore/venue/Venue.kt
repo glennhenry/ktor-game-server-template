@@ -28,8 +28,13 @@ import java.io.File
  * For example:
  * - `database.prod.name` → `ENCORE_DATABASE_PROD_NAME`
  * - `color._enabled` → `ENCORE_COLOR__ENABLED`
+ * - `devMode` → `ENCORE_DEVMODE`
  *
  * Where `ENCORE_` correspond to set prefix [ENCORE_ENV_PREFIX].
+ *
+ * **Important:** The underscore is only added for nested elements.
+ * Notice that it's not `ENCORE_DEV_MODE` but `ENCORE_DEVMODE` instead although
+ * the variable name is camel-cased.
  *
  * Values set from ENV can also be accessed directly using [get].
  *

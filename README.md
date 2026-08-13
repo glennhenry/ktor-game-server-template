@@ -10,7 +10,7 @@ The framework is primarily created for private server development. It includes r
 
 An empty documentation site is also available to write reverse engineering findings.
 
-Encore [version info](https://github.com/glennhenry/Encore/blob/main/src/main/kotlin/encore/EncoreIdentity.kt): `1.1.0 (Rookie - first comeback)`
+Encore [version info](https://github.com/glennhenry/Encore/blob/main/src/main/kotlin/encore/EncoreIdentity.kt): `1.1.1 (Rookie - 100 days anniversary)`
 
 ```
 readme template
@@ -101,7 +101,7 @@ Various server settings can be configured from `venue.xml`. Secret version of th
 Every variables can be overriden from OS environment variables. For example, in PowerShell (Windows):
 
 ```ps1
-$env:ENCORE_DEV_MODE = "false"
+$env:ENCORE_DEVMODE = "false"
 $env:ENCORE_SERVER_PORT = "1234"
 java -jar encore.jar
 ```
