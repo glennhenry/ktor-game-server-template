@@ -1,6 +1,5 @@
 package encore.backstage
 
-import game.context.ServerContext
 import encore.fancam.Fancam
 import encore.fancam.Tags
 import encore.route.RouteHandler
@@ -9,6 +8,7 @@ import encore.route.handle
 import encore.time.TimeCenter
 import encore.utils.identifier.Ids
 import encore.websocket.WebSocketMessage
+import game.context.ServerContext
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -141,28 +141,9 @@ class BackstageRoutes(
                 val html = StringBuilder()
 
                 html.append("<ul>")
-
                 for (cmd in commands) {
-                    html.append("<li><b><code>${cmd.commandId}</code></b>: ${cmd.description}")
-                    html.append("<ol>")
-
-                    for (variant in cmd.variants) {
-                        html.append("<li>")
-                        html.append("<ul>")
-
-                        // Signature list
-                        for (sig in variant.signature) {
-                            html.append("<li><code>${sig.id}</code> (<code>${sig.expectedType}</code>): ${sig.description}</li>")
-                        }
-
-                        html.append("</ul>")
-                        html.append("</li>")
-                    }
-
-                    html.append("</ol>")
-                    html.append("</li>")
+                    html.append("<li><b><code>${cmd.commandId}</code></b>: ${cmd.description}</li>")
                 }
-
                 html.append("</ul>")
 
                 call.respondText(html.toString(), ContentType.Text.Html)

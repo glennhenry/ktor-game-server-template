@@ -2,16 +2,15 @@ package encore.backstage.command
 
 import encore.backstage.command.types.CommandRequest
 import encore.backstage.command.types.CommandResult
-import encore.backstage.command.types.CommandVariant
-import game.context.ServerContext
 import encore.fancam.Fancam
 import encore.fancam.Tags
+import game.context.ServerContext
 
 /**
  * Dispatch and execute server registered commands.
  *
  * Server commands offers the ability to control the server from command implementation.
- * It gives the possibility to modify server's behavior, such as modifying player's data.
+ * It gives the possibility to modify server's behavior, such as modifying user's data.
  *
  * The server accepts command from a simple text input in the external web devtools (backstage).
  *
@@ -19,7 +18,7 @@ import encore.fancam.Tags
  * - Implement [Command].
  * - Register the command with [register].
  * - Via the backstage, type the command with input arguments.
- * - Syntax typically looks like 'give playerABC water 100'.
+ * - Syntax typically looks like 'give userABC water 100'.
  *
  * See example in `test.backstage.CommandDispatcherTest`.
  */
@@ -36,32 +35,15 @@ class CommandDispatcher {
     /**
      * Register a server command.
      *
-     * @param command The command to be registered.
+     * @param command The command implementation to be registered.
      * @throws IllegalArgumentException throws when:
      * - `commandId` is blank or contains invalid character (see [allowedPattern]).
-     * - [Command.variants] contains a duplicate variant.
      */
     fun register(command: Command) {
         val cleanId = sanitizeCommandId(command.commandId)
 
         if (cleanId in commands) {
             Fancam.warn(Tags.Command) { "The commandId '${cleanId}' has been registered before, the old one will be overwritten." }
-        }
-
-        val seenVariant = mutableMapOf<Int, CommandVariant>()
-        for (variant in command.variants) {
-            if (variant.argCount in seenVariant) {
-                throw IllegalArgumentException(
-                    buildString {
-                        appendLine("Found duplicate variant for command '${cleanId}': $variant.")
-                        appendLine("Argument length is ${variant.argCount}.")
-                        appendLine("Variants must have unique argument counts.")
-                        append("The first-come variant: (${seenVariant[variant.argCount]?.detailedString()}) will be used.")
-                    }
-                )
-            } else {
-                seenVariant[variant.argCount] = variant
-            }
         }
 
         commands[cleanId] = command
@@ -89,7 +71,7 @@ class CommandDispatcher {
      *
      * @return [CommandResult] that represents the outcome.
      */
-    fun handleRawCommand(raw: String, serverContext: ServerContext): CommandResult {
+    suspend fun handleRawCommand(raw: String, serverContext: ServerContext): CommandResult {
         val request = try {
             parser.parse(raw)
         } catch (e: IllegalArgumentException) {
@@ -111,7 +93,7 @@ class CommandDispatcher {
      *
      * @return [CommandResult] that represents the outcome.
      */
-    fun handleCommand(request: CommandRequest, serverContext: ServerContext): CommandResult {
+    suspend fun handleCommand(request: CommandRequest, serverContext: ServerContext): CommandResult {
         val command = commands[request.commandId] ?: return CommandResult.CommandNotFound(request.commandId)
 
         Fancam.info(Tags.Command) { "Received command '${request.commandId} ${request.arguments}'" }
@@ -131,13 +113,6 @@ class CommandDispatcher {
      */
     fun getAllRegisteredCommandsId(): Set<String> {
         return commands.keys
-    }
-
-    /**
-     * @return [List] of variants of `commandId`. Returns empty list if the command is not registered.
-     */
-    fun getAllVariantsOf(commandId: String): List<CommandVariant> {
-        return commands[commandId]?.variants ?: emptyList()
     }
 
     /**

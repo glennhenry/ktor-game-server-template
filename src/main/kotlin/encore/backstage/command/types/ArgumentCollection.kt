@@ -7,7 +7,7 @@ package encore.backstage.command.types
  * retrieve and convert values:
  * - [next] for raw strings.
  * - [nextInt], [nextBoolean], [nextDouble] for typed values.
- * - Each type also offers a `default` variant for optional retrieval.
+ * - [nextIntOr], [nextBooleanOr], [nextDoubleOr] to support defaults.
  *
  * Arguments that cannot be converted to the requested type will return `null`.
  */
